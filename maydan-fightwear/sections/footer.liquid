@@ -1,0 +1,232 @@
+{%- comment -%}
+  MAYDAN footer. Blocks (brand, menu columns, newsletter) are editable,
+  removable and reorderable. Bottom bar carries localization (Shopify Markets),
+  payment icons and copyright.
+{%- endcomment -%}
+<footer class="footer color-{{ section.settings.color_scheme }}" role="contentinfo">
+  <div class="page-width">
+    <div class="footer__top">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'brand' -%}
+            <div class="footer__brand" {{ block.shopify_attributes }}>
+              {%- if settings.logo != blank -%}
+                <div class="footer__brand-logo">
+                  <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" loading="lazy" width="160">
+                </div>
+              {%- else -%}
+                <span class="header__logo-text" style="display:block;margin-bottom:1.6rem;">MAYDAN</span>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="footer__brand-text rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- render 'social-icons' -%}
+            </div>
+
+          {%- when 'menu' -%}
+            <div class="footer__block" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h2 class="footer__block-title">{{ block.settings.heading | escape }}</h2>
+              {%- endif -%}
+              {%- if block.settings.menu != blank -%}
+                <ul class="footer__menu" role="list">
+                  {%- for link in block.settings.menu.links -%}
+                    <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+          {%- when 'newsletter' -%}
+            <div class="footer__block footer__newsletter" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h2 class="footer__newsletter-title">{{ block.settings.heading | escape }}</h2>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="footer__brand-text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+              {%- form 'customer', class: 'newsletter-form', novalidate: 'novalidate' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter,footer">
+                <input type="hidden" name="contact[accepts_marketing]" value="true">
+                <div class="newsletter-form__field field">
+                  <label class="visually-hidden" for="footer-email">{{ 'general.newsletter_form.newsletter_email' | t }}</label>
+                  <input id="footer-email" type="email" name="contact[email]" required
+                    placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                    autocomplete="email" value="{{ form.email }}">
+                </div>
+                <button type="submit" class="button">{{ 'general.newsletter_form.submit' | t }}</button>
+                {%- if form.errors -%}
+                  <p class="newsletter-form__message form__message--error" role="alert">{{ 'general.newsletter_form.error' | t }}</p>
+                {%- elsif form.posted_successfully? -%}
+                  <p class="newsletter-form__message form__message--success" data-newsletter-success role="status">{{ 'general.newsletter_form.confirmation' | t }}</p>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__utilities">
+        {%- if section.settings.show_locale_selector or section.settings.show_country_selector -%}
+          {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+            {%- form 'localization', class: 'localization-form' -%}
+              {%- if section.settings.show_country_selector and localization.available_countries.size > 1 -%}
+                <div>
+                  <label class="visually-hidden" for="footer-country">{{ 'sections.footer.country_region' | t }}</label>
+                  <select id="footer-country" name="country_code" onchange="this.form.submit()">
+                    {%- for country in localization.available_countries -%}
+                      <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+                        {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.show_locale_selector and localization.available_languages.size > 1 -%}
+                <div>
+                  <label class="visually-hidden" for="footer-language">{{ 'sections.footer.language' | t }}</label>
+                  <select id="footer-language" name="locale_code" onchange="this.form.submit()">
+                    {%- for language in localization.available_languages -%}
+                      <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endif -%}
+            {%- endform -%}
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        {%- render 'payment-icons' -%}
+      {%- endif -%}
+
+      <div class="footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}.
+        {%- if section.settings.copyright_text != blank %} {{ section.settings.copyright_text }}{% endif %}
+        {%- if section.settings.show_policy_links -%}
+          {%- for policy in shop.policies -%}
+            {%- if policy != blank %} · <a href="{{ policy.url }}">{{ policy.title }}</a>{% endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-3", "label": "Charcoal" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show country/region selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_locale_selector",
+      "label": "Show language selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show accepted payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policy_links",
+      "label": "Show store policy links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Additional copyright text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Brand text",
+          "default": "<p>Technical fightwear built for the rounds that count.</p>"
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Join the MAYDAN"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Early access, private releases and restock alerts."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu", "settings": { "heading": "Shop", "menu": "footer" } },
+        { "type": "menu", "settings": { "heading": "Help" } },
+        { "type": "newsletter" }
+      ]
+    }
+  ]
+}
+{% endschema %}

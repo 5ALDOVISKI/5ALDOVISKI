@@ -1,0 +1,111 @@
+{%- comment -%}
+  Email capture — premium newsletter with Shopify customer marketing consent.
+  Validation + success state handled by Shopify's customer form.
+{%- endcomment -%}
+{%- liquid
+  assign has_image = false
+  if section.settings.background_image != blank
+    assign has_image = true
+  endif
+-%}
+<section class="section email-capture color-{{ section.settings.color_scheme }}" style="position:relative;">
+  {%- if has_image -%}
+    <div class="hero__media">
+      {{ section.settings.background_image | image_url: width: 2000 | image_tag: loading: 'lazy', widths: '800,1200,2000', sizes: '100vw', alt: '' }}
+    </div>
+    <div class="hero__overlay" style="opacity:.9;"></div>
+  {%- endif -%}
+  <div class="page-width isolate">
+    <div class="email-capture__inner reveal">
+      {%- if section.settings.overline != blank -%}
+        <p class="overline">{{ section.settings.overline | escape }}</p>
+      {%- endif -%}
+      <h2 class="email-capture__title">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="email-capture__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+
+      {%- form 'customer', class: 'newsletter-form', novalidate: 'novalidate' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter,homepage">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <div class="newsletter-form__field field">
+          <label class="visually-hidden" for="email-capture-input">{{ 'general.newsletter_form.newsletter_email' | t }}</label>
+          <input id="email-capture-input" type="email" name="contact[email]" required
+            placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+            autocomplete="email" autocorrect="off" value="{{ form.email }}"
+            aria-required="true">
+        </div>
+        <button type="submit" class="button">{{ 'general.newsletter_form.submit' | t }}</button>
+      {%- endform -%}
+
+      {%- if form.errors -%}
+        <p class="newsletter-form__message form__message--error" role="alert">
+          {% render 'icon', icon: 'close', size: 14 %} {{ 'general.newsletter_form.error' | t }}
+        </p>
+      {%- elsif form.posted_successfully? -%}
+        <p class="newsletter-form__message form__message--success" role="status">
+          {% render 'icon', icon: 'check', size: 14 %} {{ 'general.newsletter_form.confirmation' | t }}
+        </p>
+      {%- endif -%}
+
+      <p class="newsletter-form__message" style="opacity:.6;font-size:1.15rem;margin-top:1.2rem;">
+        {{ section.settings.consent_text | escape }}
+      </p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Email capture",
+  "class": "section-email-capture",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-3", "label": "Charcoal" },
+        { "value": "scheme-4", "label": "Muted red" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-3"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image (optional)"
+    },
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Overline",
+      "default": "The MAYDAN list"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "GET IN BEFORE THE DROP."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Early access, private releases and restock alerts."
+    },
+    {
+      "type": "text",
+      "id": "consent_text",
+      "label": "Consent text",
+      "default": "By subscribing you agree to receive marketing emails from MAYDAN. Unsubscribe anytime."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email capture"
+    }
+  ]
+}
+{% endschema %}

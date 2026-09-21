@@ -272,12 +272,13 @@
 
 /* Mobile filter drawer */
 @media screen and (max-width: 989px) {
-  facet-filters-form.facets-sidebar {
+  .facets-sidebar {
     position: fixed;
     inset: 0;
     z-index: 70;
     visibility: hidden;
     pointer-events: none;
+    display: block;
   }
   .facets-sidebar.active {
     visibility: visible;

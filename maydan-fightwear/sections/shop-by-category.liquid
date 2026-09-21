@@ -1,0 +1,115 @@
+{%- comment -%}
+  Shop by category — large editorial tiles.
+  Each tile can use an uploaded image, a collection's image, or a refined
+  color-and-typography placeholder. Never uses generated product imagery.
+{%- endcomment -%}
+<section class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-heading reveal">
+        <h2 class="section-heading__title h2">{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+
+    <div class="category-grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign collection = collections[block.settings.collection]
+          assign tile_image = block.settings.image
+          if tile_image == blank and collection.image
+            assign tile_image = collection.image
+          endif
+          assign tile_title = block.settings.title
+          if tile_title == blank and collection.title
+            assign tile_title = collection.title
+          endif
+          assign tile_url = block.settings.link
+          if tile_url == blank and collection.url
+            assign tile_url = collection.url
+          endif
+        -%}
+        <a href="{{ tile_url | default: '#' }}" class="category-tile reveal" {{ block.shopify_attributes }}>
+          <div class="category-tile__media">
+            {%- if tile_image != blank -%}
+              {{ tile_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400,600,900,1200', sizes: '(min-width: 750px) 33vw, 100vw', alt: tile_title | escape }}
+            {%- else -%}
+              <div class="category-tile__placeholder"></div>
+            {%- endif -%}
+          </div>
+          <div class="category-tile__overlay"></div>
+          <div class="category-tile__content">
+            <h3 class="category-tile__title">{{ tile_title | default: 'Category' | escape }}</h3>
+            <span class="category-tile__cta" aria-hidden="true">{% render 'icon', icon: 'arrow-right', size: 18 %}</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by category",
+  "class": "section-category",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" },
+        { "value": "scheme-3", "label": "Charcoal" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category tile",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Uses the collection's image, title and link if the fields below are empty."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title override"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image override",
+          "info": "Campaign photography or a merchant-uploaded collection image. Leave empty for a refined placeholder."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link override"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by category",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Rashguards" } },
+        { "type": "category", "settings": { "title": "Fight Shorts" } },
+        { "type": "category", "settings": { "title": "Essentials" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

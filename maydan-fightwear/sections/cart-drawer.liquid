@@ -1,0 +1,122 @@
+{%- comment -%}
+  Slide-out cart drawer. Re-rendered via the Section Rendering API on add/update.
+  Everything that changes lives inside [data-cart-drawer-inner].
+{%- endcomment -%}
+<cart-drawer class="{% if cart == empty %}is-empty{% endif %}" aria-hidden="true">
+  <div class="cart-drawer__overlay" data-cart-overlay></div>
+  <div class="cart-drawer__panel color-scheme-1" role="dialog" aria-modal="true" aria-label="{{ 'sections.cart.title' | t }}">
+    <div class="cart-drawer__header">
+      <h2 class="cart-drawer__title">{{ 'sections.cart.title' | t }}</h2>
+      <button class="header__icon" data-cart-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    </div>
+
+    <div data-cart-drawer-inner style="display:flex;flex-direction:column;flex:1;min-height:0;">
+      {%- if cart == empty -%}
+        <div class="cart-drawer__empty">
+          <p class="cart-drawer__empty-text">{{ 'sections.cart.empty' | t }}</p>
+          <button class="button" data-cart-close>{{ 'general.continue_shopping' | t }}</button>
+        </div>
+      {%- else -%}
+        {%- render 'free-shipping-bar' -%}
+
+        <div class="cart-drawer__body">
+          <div class="cart-items" data-cart-line-items>
+            {%- for item in cart.items -%}
+              {%- render 'cart-line-item', item: item, context: 'drawer' -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if settings.cart_show_recommendations and section.settings.recommendations_collection != blank -%}
+            {%- assign rec_collection = collections[section.settings.recommendations_collection] -%}
+            {%- assign shown = 0 -%}
+            {%- for product in rec_collection.products limit: 6 -%}
+              {%- unless cart.items contains product and shown >= 1 -%}
+                {%- assign in_cart = false -%}
+                {%- for ci in cart.items -%}
+                  {%- if ci.product_id == product.id -%}{%- assign in_cart = true -%}{%- endif -%}
+                {%- endfor -%}
+                {%- if in_cart == false and product.available and shown < 1 -%}
+                  <div class="cart-drawer__recommendations">
+                    <h3 class="cart-drawer__recommendations-title">{{ 'sections.cart.recommendations_title' | t }}</h3>
+                    <div class="cart-recommendation">
+                      <a href="{{ product.url }}" class="cart-recommendation__media">
+                        {%- if product.featured_media -%}
+                          {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,120', alt: product.title | escape }}
+                        {%- else -%}
+                          <div class="card__placeholder"><span class="card__placeholder-mark" style="font-size:1rem">M</span></div>
+                        {%- endif -%}
+                      </a>
+                      <div>
+                        <a href="{{ product.url }}" class="cart-recommendation__title">{{ product.title }}</a>
+                        <div class="cart-recommendation__price">{{ product.price | money }}</div>
+                      </div>
+                      {%- if product.variants.size == 1 -%}
+                        <quick-add data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-has-options="false">
+                          <button type="button" class="button button--small" data-quick-add-button>{{ 'sections.cart.add' | t }}</button>
+                        </quick-add>
+                      {%- else -%}
+                        <a href="{{ product.url }}" class="button button--small button--secondary">{{ 'sections.cart.add' | t }}</a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                  {%- assign shown = shown | plus: 1 -%}
+                {%- endif -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+        <div class="cart-drawer__footer">
+          {%- if settings.cart_show_note -%}
+            <details class="cart-drawer__note collapsible">
+              <summary class="cart-drawer__subtotal-label" style="cursor:pointer;">{{ 'sections.cart.note' | t }}</summary>
+              <label class="visually-hidden" for="cart-drawer-note">{{ 'sections.cart.note' | t }}</label>
+              <textarea id="cart-drawer-note" name="note" form="cart-drawer-form" style="min-height:8rem;margin-top:1rem;">{{ cart.note }}</textarea>
+            </details>
+          {%- endif -%}
+
+          <div class="cart-drawer__subtotal">
+            <span class="cart-drawer__subtotal-label">{{ 'sections.cart.subtotal' | t }}</span>
+            <span class="cart-drawer__subtotal-value">{{ cart.total_price | money }}</span>
+          </div>
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <div class="cart-item__discount">{{ discount.title }} (−{{ discount.total_allocated_amount | money }})</div>
+            {%- endfor -%}
+          {%- endif -%}
+          <p class="cart-drawer__tax-note">{{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}</p>
+
+          <form action="{{ routes.cart_url }}" method="post" id="cart-drawer-form" class="cart-drawer__actions">
+            <button type="submit" name="checkout" class="button button--full cart-drawer__checkout">
+              {{ 'sections.cart.checkout' | t }}
+            </button>
+            {%- if additional_checkout_buttons -%}
+              <div class="cart__dynamic-checkout additional-checkout-buttons">
+                {{ content_for_additional_checkout_buttons }}
+              </div>
+            {%- endif -%}
+            <button type="button" class="button button--secondary button--full" data-cart-close>{{ 'sections.cart.continue_shopping' | t }}</button>
+          </form>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The cart type (drawer / page / notification) is set in Theme settings > Cart."
+    },
+    {
+      "type": "collection",
+      "id": "recommendations_collection",
+      "label": "Add-on recommendations collection",
+      "info": "One available product not already in the cart is suggested from this collection."
+    }
+  ]
+}
+{% endschema %}

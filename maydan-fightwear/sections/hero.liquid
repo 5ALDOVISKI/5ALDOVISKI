@@ -1,0 +1,190 @@
+{%- comment -%}
+  Campaign hero — one cinematic full-width image with negative space for the
+  headline. Uses merchant-uploaded campaign photography. Until real photography
+  is uploaded a refined dark placeholder is shown (clearly labeled).
+  No product cut-outs, tech-packs or generated imagery.
+{%- endcomment -%}
+{%- liquid
+  assign has_image = false
+  if section.settings.desktop_image != blank
+    assign has_image = true
+  endif
+  assign align = section.settings.content_alignment
+-%}
+<section class="hero hero--{{ section.settings.height }} color-scheme-1" data-section-id="{{ section.id }}">
+  <div class="hero__media">
+    {%- if has_image -%}
+      {%- if section.settings.mobile_image != blank -%}
+        <img
+          src="{{ section.settings.mobile_image | image_url: width: 900 }}"
+          srcset="{{ section.settings.mobile_image | image_url: width: 600 }} 600w, {{ section.settings.mobile_image | image_url: width: 900 }} 900w, {{ section.settings.mobile_image | image_url: width: 1200 }} 1200w"
+          sizes="100vw"
+          alt="{{ section.settings.desktop_image.alt | default: 'MAYDAN campaign' | escape }}"
+          width="900" height="1200"
+          {% if section.settings.eager_load %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+          class="hero__image hero__image--mobile"
+          style="display:none;">
+      {%- endif -%}
+      <img
+        src="{{ section.settings.desktop_image | image_url: width: 2000 }}"
+        srcset="{{ section.settings.desktop_image | image_url: width: 1200 }} 1200w, {{ section.settings.desktop_image | image_url: width: 1800 }} 1800w, {{ section.settings.desktop_image | image_url: width: 2400 }} 2400w"
+        sizes="100vw"
+        alt="{{ section.settings.desktop_image.alt | default: 'MAYDAN campaign' | escape }}"
+        width="2000" height="1125"
+        {% if section.settings.eager_load %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+        class="hero__image hero__image--desktop">
+    {%- else -%}
+      <div class="hero__placeholder"></div>
+      <span class="placeholder-tag">Campaign image — replace in theme editor</span>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_overlay -%}
+    <div class="hero__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+  {%- endif -%}
+
+  <div class="hero__content">
+    <div class="hero__inner {% if align == 'center' %}hero__inner--center{% endif %}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'overline' -%}
+            <p class="overline reveal" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            <h2 class="hero__title reveal" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</h2>
+          {%- when 'text' -%}
+            <p class="hero__subtitle reveal" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'buttons' -%}
+            <div class="hero__buttons reveal" {{ block.shopify_attributes }}>
+              {%- if block.settings.button_1_label != blank -%}
+                <a href="{{ block.settings.button_1_link | default: '#' }}" class="button">{{ block.settings.button_1_label | escape }}</a>
+              {%- endif -%}
+              {%- if block.settings.button_2_label != blank -%}
+                <a href="{{ block.settings.button_2_link | default: '#' }}" class="button button--secondary">{{ block.settings.button_2_label | escape }}</a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  {%- if section.settings.mobile_image != blank -%}
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .hero__image--desktop { display: none; }
+    #shopify-section-{{ section.id }} .hero__image--mobile { display: block !important; }
+  }
+  {%- endif -%}
+</style>
+
+{% schema %}
+{
+  "name": "Campaign hero",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop campaign image",
+      "info": "Cinematic full-width editorial photography. Landscape recommended (16:9 or wider)."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile campaign image",
+      "info": "Portrait crop for phones. Falls back to the desktop image."
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" },
+        { "value": "full", "label": "Full screen" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Darken image for text legibility",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay strength",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "eager_load",
+      "label": "Prioritize loading (recommended for the top hero)",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "overline",
+      "name": "Overline",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "DROP 001" }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Heading", "default": "ENTER THE MAYDAN." }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Subheading",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Technical fightwear built for the rounds that count." }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "button_1_label", "label": "Button 1 label", "default": "Shop New Drop" },
+        { "type": "url", "id": "button_1_link", "label": "Button 1 link" },
+        { "type": "text", "id": "button_2_label", "label": "Button 2 label", "default": "Shop All Gear" },
+        { "type": "url", "id": "button_2_link", "label": "Button 2 link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Campaign hero",
+      "blocks": [
+        { "type": "overline" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "buttons" }
+      ]
+    }
+  ]
+}
+{% endschema %}

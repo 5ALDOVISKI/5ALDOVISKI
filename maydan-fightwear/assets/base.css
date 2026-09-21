@@ -13,6 +13,18 @@
   box-sizing: border-box;
 }
 
+/* Custom elements default to inline; make container elements block */
+header-wrapper,
+product-form,
+variant-selects,
+facet-filters-form,
+load-more,
+size-guide-drawer,
+cart-items,
+predictive-search {
+  display: block;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

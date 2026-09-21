@@ -1,0 +1,245 @@
+{%- comment -%}
+  MAYDAN header.
+  - Transparent over the hero on the homepage, solid black sticky header on scroll.
+  - Logo uses the official uploaded logo (settings.logo) with a text wordmark fallback.
+  - Optional approved Arabic wordmark slot (empty by default — never generated).
+  - Global search modal (predictive) and full-screen mobile nav drawer.
+{%- endcomment -%}
+{%- liquid
+  assign is_home = false
+  if request.page_type == 'index'
+    assign is_home = true
+  endif
+  assign transparent = false
+  if section.settings.transparent_on_home and is_home
+    assign transparent = true
+  endif
+  assign menu = section.settings.menu
+  assign highlight = section.settings.highlight_menu_title | downcase | strip
+-%}
+
+<header-wrapper
+  class="header-wrapper {% if transparent %}header--transparent{% else %}header--solid{% endif %} {% if section.settings.enable_sticky and transparent == false %}header-wrapper--sticky{% endif %}"
+  data-header-wrapper>
+  <div class="header color-scheme-1">
+    <button class="header__icon header__menu-toggle" data-mobile-nav-open aria-label="{{ 'general.accessibility.open_menu' | t }}" aria-controls="mobile-nav" aria-expanded="false">
+      {% render 'icon', icon: 'menu' %}
+    </button>
+
+    {%- comment -%} Desktop inline menu (left) {%- endcomment -%}
+    <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
+      <ul class="header__menu-list" role="list">
+        {%- for link in menu.links -%}
+          {%- assign is_highlight = false -%}
+          {%- if highlight != blank and link.title | downcase | strip == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
+          <li class="header__menu-item-wrapper">
+            {%- if link.links.size > 0 -%}
+              <a href="{{ link.url }}" class="header__menu-item {% if is_highlight %}header__menu-item--highlight{% endif %}" aria-expanded="false" aria-haspopup="true">
+                {{ link.title | escape }}
+                {% render 'icon', icon: 'chevron-down', size: 12 %}
+              </a>
+              <div class="header__submenu">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}">{{ child.title | escape }}</a>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <a href="{{ link.url }}" class="header__menu-item {% if is_highlight %}header__menu-item--highlight{% endif %}">{{ link.title | escape }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    {%- comment -%} Logo (center) {%- endcomment -%}
+    <h1 class="header__heading">
+      <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name | escape }}">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_alt = settings.logo.alt | default: shop.name -%}
+          {%- if transparent and settings.logo_light != blank -%}
+            <img src="{{ settings.logo_light | image_url: width: 600 }}" alt="{{ logo_alt | escape }}" width="{{ settings.logo_light.width }}" height="{{ settings.logo_light.height }}" data-logo-transparent>
+          {%- else -%}
+            <img src="{{ settings.logo | image_url: width: 600 }}" alt="{{ logo_alt | escape }}" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}">
+          {%- endif -%}
+        {%- else -%}
+          <span class="header__logo-text">MAYDAN</span>
+        {%- endif -%}
+        {%- if section.settings.arabic_logo != blank -%}
+          <img class="header__logo-arabic" src="{{ section.settings.arabic_logo | image_url: width: 300 }}" alt="{{ section.settings.arabic_logo.alt | default: shop.name | escape }}" loading="lazy" style="height:2.2rem;width:auto;margin-inline-start:1rem;">
+        {%- endif -%}
+      </a>
+    </h1>
+
+    {%- comment -%} Icons (right) {%- endcomment -%}
+    <div class="header__icons">
+      {%- if section.settings.show_search -%}
+        <button class="header__icon" data-search-open aria-label="{{ 'general.search.search' | t }}">
+          {% render 'icon', icon: 'search' %}
+        </button>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+        <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__icon" aria-label="{{ 'customer.account_fallback' | t }}">
+          {% render 'icon', icon: 'account' %}
+        </a>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="header__icon" data-cart-drawer-toggle aria-label="{{ 'templates.cart.cart' | t }}">
+        {% render 'icon', icon: 'bag' %}
+        <span data-cart-icon-bubble>{% render 'cart-icon-bubble' %}</span>
+      </a>
+    </div>
+  </div>
+</header-wrapper>
+
+{%- comment -%} ============ Mobile navigation drawer ============ {%- endcomment -%}
+<div class="mobile-nav" id="mobile-nav" data-mobile-nav aria-hidden="true">
+  <div class="mobile-nav__overlay" data-mobile-nav-close></div>
+  <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}">
+    <div class="mobile-nav__header color-scheme-1">
+      <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name | escape }}">
+        {%- if settings.logo != blank -%}
+          <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width_mobile }}px;height:auto;">
+        {%- else -%}
+          <span class="header__logo-text">MAYDAN</span>
+        {%- endif -%}
+      </a>
+      <button class="header__icon" data-mobile-nav-close aria-label="{{ 'general.accessibility.close_menu' | t }}">
+        {% render 'icon', icon: 'close' %}
+      </button>
+    </div>
+
+    <nav class="mobile-nav__body" aria-label="{{ 'sections.header.menu' | t }}">
+      <ul role="list">
+        {%- for link in menu.links -%}
+          {%- assign is_highlight = false -%}
+          {%- if highlight != blank and link.title | downcase | strip == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <button class="mobile-nav__link {% if is_highlight %}mobile-nav__link--highlight{% endif %}" data-mobile-submenu-toggle aria-expanded="false">
+                {{ link.title | escape }}
+                {% render 'icon', icon: 'chevron-down', size: 16 %}
+              </button>
+              <div hidden>
+                <a class="mobile-nav__sublink" href="{{ link.url }}">All {{ link.title | escape }}</a>
+                {%- for child in link.links -%}
+                  <a class="mobile-nav__sublink" href="{{ child.url }}">{{ child.title | escape }}</a>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <a class="mobile-nav__link {% if is_highlight %}mobile-nav__link--highlight{% endif %}" href="{{ link.url }}">
+                {{ link.title | escape }}
+                {% render 'icon', icon: 'chevron-right', size: 16 %}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="mobile-nav__footer color-scheme-1">
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="mobile-nav__utility" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+          {% render 'icon', icon: 'account', size: 18 %}
+          {%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}
+        </a>
+      {%- endif -%}
+      {%- render 'social-icons' -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} ============ Search modal (predictive) ============ {%- endcomment -%}
+{%- if section.settings.show_search -%}
+  <div class="search-modal" data-search-modal aria-hidden="true">
+    <div class="search-modal__overlay" data-search-close></div>
+    <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+      <div class="search-modal__header">
+        {%- if settings.predictive_search_enabled -%}
+          <predictive-search class="search-modal__form" data-predictive-search>
+            <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form-inner" style="display:flex;flex:1;align-items:center;gap:1rem;">
+              <input type="hidden" name="type" value="product">
+              <label class="visually-hidden" for="search-modal-input">{{ 'general.search.search' | t }}</label>
+              <input id="search-modal-input" class="search-modal__input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" autocorrect="off" spellcheck="false">
+              <button type="button" class="header__icon search-modal__reset" data-search-reset aria-label="{{ 'general.search.reset' | t }}">{% render 'icon', icon: 'close', size: 20 %}</button>
+              <button type="submit" class="header__icon search-modal__submit" aria-label="{{ 'general.search.search' | t }}">{% render 'icon', icon: 'search', size: 22 %}</button>
+            </form>
+            <div class="predictive-search" style="width:100%;">
+              <div class="predictive-search__loading">{{ 'general.accessibility.loading' | t }}</div>
+              <div data-predictive-results hidden></div>
+            </div>
+          </predictive-search>
+        {%- else -%}
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+            <input class="search-modal__input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+            <button type="submit" class="header__icon" aria-label="{{ 'general.search.search' | t }}">{% render 'icon', icon: 'search', size: 22 %}</button>
+          </form>
+        {%- endif -%}
+        <button class="header__icon" data-search-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close', size: 24 %}</button>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "highlight_menu_title",
+      "label": "Highlighted menu item",
+      "info": "Top-level menu item to accent in red (e.g. New Drop). Match the title exactly.",
+      "default": "New Drop"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_home",
+      "label": "Transparent header over homepage hero",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Sticky header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account icon",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Arabic wordmark (optional)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Upload a finalized, approved Arabic wordmark graphic only. Leave empty otherwise — the theme never generates Arabic type."
+    },
+    {
+      "type": "image_picker",
+      "id": "arabic_logo",
+      "label": "Approved Arabic wordmark"
+    }
+  ]
+}
+{% endschema %}

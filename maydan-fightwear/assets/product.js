@@ -268,6 +268,44 @@
     }
   }
 
+  /* ---------------------- Product recommendations ----------------------- */
+  class ProductRecommendations extends HTMLElement {
+    connectedCallback() {
+      const handleIntersection = (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.unobserve(this);
+        const url = this.dataset.url;
+        if (!url) return;
+        fetch(url)
+          .then((r) => r.text())
+          .then((text) => {
+            const html = new DOMParser().parseFromString(text, 'text/html');
+            const recommendations = html.querySelector('product-recommendations');
+            if (recommendations && recommendations.innerHTML.trim().length) {
+              this.innerHTML = recommendations.innerHTML;
+              this.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+            } else {
+              const sectionEl = this.closest('[data-recommendations-section]');
+              if (sectionEl && !window.Shopify?.designMode) sectionEl.hidden = true;
+            }
+          })
+          .catch(() => {});
+      };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(handleIntersection, { rootMargin: '0px 0px 400px 0px' }).observe(this);
+      } else {
+        this.dataset.url && fetch(this.dataset.url).then((r) => r.text()).then((t) => {
+          const html = new DOMParser().parseFromString(t, 'text/html');
+          const rec = html.querySelector('product-recommendations');
+          if (rec) this.innerHTML = rec.innerHTML;
+        });
+      }
+    }
+  }
+  if (!customElements.get('product-recommendations')) {
+    customElements.define('product-recommendations', ProductRecommendations);
+  }
+
   /* ------------------------- Recently viewed ---------------------------- */
   function initRecentlyViewed() {
     const KEY = 'maydan:recently-viewed';

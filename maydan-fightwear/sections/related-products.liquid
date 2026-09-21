@@ -1,0 +1,72 @@
+{%- comment -%}
+  Recommended products. Uses Shopify's Product Recommendations API (loaded
+  lazily by product.js). Falls back to a merchant-selected collection.
+{%- endcomment -%}
+<div data-recommendations-section>
+  <section class="section related-products color-{{ section.settings.color_scheme }}">
+    <div class="page-width">
+      <div class="section-heading reveal">
+        <h2 class="section-heading__title h3">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <product-recommendations
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}">
+        {%- if recommendations.performed and recommendations.products_count > 0 -%}
+          <div class="product-grid product-grid--{{ section.settings.columns }}">
+            {%- for product in recommendations.products limit: section.settings.products_to_show -%}
+              {%- render 'card-product', card_product: product -%}
+            {%- endfor -%}
+          </div>
+        {%- elsif recommendations.performed == false and section.settings.fallback_collection != blank -%}
+          {%- assign current_product_id = product.id -%}
+          {%- assign fallback = collections[section.settings.fallback_collection] -%}
+          <div class="product-grid product-grid--{{ section.settings.columns }}">
+            {%- assign rendered = 0 -%}
+            {%- for fallback_product in fallback.products -%}
+              {%- if fallback_product.id != current_product_id and rendered < section.settings.products_to_show -%}
+                {%- render 'card-product', card_product: fallback_product -%}
+                {%- assign rendered = rendered | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </product-recommendations>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Recommended products",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Complete the kit" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 8, "step": 1, "label": "Products to show", "default": 4 },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Shown while/if Shopify has no recommendations for this product."
+    }
+  ],
+  "presets": [{ "name": "Recommended products" }]
+}
+{% endschema %}

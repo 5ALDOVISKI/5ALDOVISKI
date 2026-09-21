@@ -1,0 +1,44 @@
+{%- comment -%}
+  Cart notification popup (cart type = notification). Re-rendered on add via the
+  Section Rendering API; JS swaps [data-notification-inner].
+{%- endcomment -%}
+<cart-notification aria-live="polite" aria-hidden="true">
+  <div class="cart-notification__inner color-scheme-1" role="dialog" aria-label="{{ 'sections.cart.title' | t }}">
+    <div data-notification-inner>
+      <div class="cart-notification__header">
+        <span>{% render 'icon', icon: 'check', size: 16 %} Added to bag</span>
+        <button class="header__icon" data-notification-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close', size: 18 %}</button>
+      </div>
+      {%- assign last_item = cart.items | last -%}
+      {%- if last_item -%}
+        <div class="cart-notification__product">
+          <a href="{{ last_item.url }}">
+            {%- if last_item.image -%}
+              {{ last_item.image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80,160', alt: last_item.title | escape }}
+            {%- else -%}
+              <div class="card__placeholder"><span class="card__placeholder-mark" style="font-size:1rem">M</span></div>
+            {%- endif -%}
+          </a>
+          <div>
+            <p class="cart-item__title">{{ last_item.product.title }}</p>
+            {%- unless last_item.product.has_only_default_variant -%}
+              <p class="cart-item__options">{{ last_item.variant.title }}</p>
+            {%- endunless -%}
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="cart-drawer__actions">
+        <a href="{{ routes.cart_url }}" class="button button--secondary button--full">{{ 'templates.cart.cart' | t }} ({{ cart.item_count }})</a>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="button button--full">{{ 'sections.cart.checkout' | t }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</cart-notification>
+
+{% schema %}
+{
+  "name": "Cart notification"
+}
+{% endschema %}
