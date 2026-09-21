@@ -1,0 +1,175 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#090909">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.heading_font.system? and settings.body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% render 'meta-tags' %}
+
+    {%- comment -%} Design tokens from theme settings {%- endcomment -%}
+    {% style %}
+      {{ settings.heading_font | font_face: font_display: 'swap' }}
+      {{ settings.body_font | font_face: font_display: 'swap' }}
+      {%- assign heading_font_bold = settings.heading_font | font_modify: 'weight', 'bolder' -%}
+      {%- assign body_font_bold = settings.body_font | font_modify: 'weight', 'bold' -%}
+      {%- if heading_font_bold -%}{{ heading_font_bold | font_face: font_display: 'swap' }}{%- endif -%}
+      {%- if body_font_bold -%}{{ body_font_bold | font_face: font_display: 'swap' }}{%- endif -%}
+
+      :root {
+        --font-heading-family: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+        --font-heading-style: {{ settings.heading_font.style }};
+        --font-heading-weight: {{ settings.heading_font.weight }};
+        --font-body-family: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+        --font-body-style: {{ settings.body_font.style }};
+        --font-body-weight: {{ settings.body_font.weight }};
+        --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+        --font-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+
+        --heading-letter-spacing: {{ settings.heading_letter_spacing }}px;
+        --heading-text-transform: {% if settings.heading_uppercase %}uppercase{% else %}none{% endif %};
+
+        --color-accent-red: {{ settings.accent_red.red }},{{ settings.accent_red.green }},{{ settings.accent_red.blue }};
+        --color-accent-bone: {{ settings.accent_bone.red }},{{ settings.accent_bone.green }},{{ settings.accent_bone.blue }};
+        --color-accent-grey: {{ settings.accent_grey.red }},{{ settings.accent_grey.green }},{{ settings.accent_grey.blue }};
+
+        --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+        --spacing-sections: {{ settings.spacing_sections }}px;
+        --grid-horizontal-spacing: {{ settings.spacing_grid_horizontal }}px;
+        --grid-vertical-spacing: {{ settings.spacing_grid_vertical }}px;
+
+        --buttons-radius: {{ settings.buttons_radius }}px;
+        --buttons-border-width: {{ settings.buttons_border_thickness }}px;
+        --buttons-letter-spacing: {{ settings.buttons_letter_spacing }}px;
+        --buttons-text-transform: {% if settings.buttons_uppercase %}uppercase{% else %}none{% endif %};
+        --inputs-radius: {{ settings.buttons_radius | at_most: 6 }}px;
+
+        --logo-width: {{ settings.logo_width }}px;
+        --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+
+        {%- case settings.card_image_ratio -%}
+          {%- when 'square' -%}--card-image-ratio: 1;
+          {%- when 'adapt' -%}--card-image-ratio: auto;
+          {%- else -%}--card-image-ratio: 0.75;
+        {%- endcase -%}
+      }
+
+      {%- comment -%} Generate a class for every color scheme {%- endcomment -%}
+      {% for scheme in settings.color_schemes -%}
+        {%- assign s = scheme.settings -%}
+        .color-{{ scheme.id }} {
+          --color-background: {{ s.background.red }},{{ s.background.green }},{{ s.background.blue }};
+          --color-foreground: {{ s.text.red }},{{ s.text.green }},{{ s.text.blue }};
+          --color-button: {{ s.button.red }},{{ s.button.green }},{{ s.button.blue }};
+          --color-button-text: {{ s.button_label.red }},{{ s.button_label.green }},{{ s.button_label.blue }};
+          --color-secondary-button-text: {{ s.secondary_button_label.red }},{{ s.secondary_button_label.green }},{{ s.secondary_button_label.blue }};
+          --color-shadow: {{ s.shadow.red }},{{ s.shadow.green }},{{ s.shadow.blue }};
+          {%- if s.background_gradient != blank -%}
+            --gradient-background: {{ s.background_gradient }};
+          {%- else -%}
+            --gradient-background: rgb({{ s.background.red }},{{ s.background.green }},{{ s.background.blue }});
+          {%- endif -%}
+        }
+      {% endfor %}
+
+      body {
+        background-color: rgb(var(--color-background));
+        color: rgb(var(--color-foreground));
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- comment -%} Anti-FOUC: enable JS features once JS loads {%- endcomment -%}
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify && Shopify.designMode) { document.documentElement.classList.add('shopify-design-mode'); }
+    </script>
+
+    <script>
+      window.MAYDAN = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart_url: {{ routes.cart_url | json }},
+          cart_add_url: {{ routes.cart_add_url | json }},
+          cart_change_url: {{ routes.cart_change_url | json }},
+          cart_update_url: {{ routes.cart_update_url | json }},
+          predictive_search_url: {{ routes.predictive_search_url | json }},
+          product_recommendations_url: {{ routes.product_recommendations_url | json }}
+        },
+        cart: {
+          type: {{ settings.cart_type | json }},
+          freeShippingThreshold: {{ settings.cart_free_shipping_threshold | times: 100 | json }},
+          showFreeShippingBar: {{ settings.cart_show_free_shipping_bar | json }},
+          currency: {{ cart.currency.iso_code | json }},
+          moneyFormat: {{ shop.money_format | json }}
+        },
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          chooseOptions: {{ 'products.product.choose_options' | t | json }},
+          cartError: {{ 'sections.cart.cart_error' | t | json }},
+          freeShippingProgress: {{ 'sections.cart.free_shipping_progress' | t: amount: '[amount]' | json }},
+          freeShippingQualified: {{ 'sections.cart.free_shipping_qualified' | t | json }},
+          shippingCalc: {{ 'products.product.shipping_policy_html' | t: link: '#' | strip_html | json }}
+        },
+        animations: {
+          revealOnScroll: {{ settings.animations_reveal_on_scroll | json }}
+        }
+      };
+    </script>
+
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+
+    {% render 'analytics-head' %}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <a class="skip-to-content-link button" href="#MainContent">
+      {{ 'general.accessibility.skip_to_content' | t }}
+    </a>
+
+    {% render 'analytics-body' %}
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- comment -%} Cart drawer/notification are sections so the Section Rendering API can refresh them {%- endcomment -%}
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- elsif settings.cart_type == 'notification' -%}
+      {% section 'cart-notification' %}
+    {%- endif -%}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'general.accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+  </body>
+</html>

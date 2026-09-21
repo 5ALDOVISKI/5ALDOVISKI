@@ -1,0 +1,45 @@
+{%- comment -%}
+  Quick-add control. Accepts: product.
+  - Single variant  -> adds directly
+  - Sold out        -> disabled
+  - Multiple variants -> opens a popover of variants (real availability only)
+{%- endcomment -%}
+{%- liquid
+  assign available = product.available
+  assign single = false
+  if product.variants.size == 1
+    assign single = true
+  endif
+-%}
+{%- if available == false -%}
+  <button type="button" class="button button--full button--small" aria-disabled="true" disabled>
+    {{ 'products.product.inventory_out_of_stock' | t }}
+  </button>
+{%- elsif single -%}
+  <quick-add data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-has-options="false">
+    <button type="button" class="button button--full button--small" data-quick-add-button>
+      <span class="loading__spinner" aria-hidden="true">{% render 'icon', icon: 'plus', size: 16 %}</span>
+      <span>{{ 'products.product.add_to_cart_short' | t }}</span>
+    </button>
+  </quick-add>
+{%- else -%}
+  <quick-add data-has-options="true" data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+    <button type="button" class="button button--full button--small" data-quick-add-button aria-haspopup="true">
+      <span>{{ 'products.product.choose_options' | t }}</span>
+    </button>
+    <div class="quick-add__popover" data-quick-add-popover hidden role="menu" aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title }}">
+      <div class="quick-add__popover-inner">
+        {%- for variant in product.variants -%}
+          <button type="button"
+            class="quick-add__option {% unless variant.available %}quick-add__option--unavailable{% endunless %}"
+            data-variant-id="{{ variant.id }}"
+            role="menuitem"
+            {% unless variant.available %}aria-disabled="true" disabled{% endunless %}>
+            {{ variant.title }}
+            {%- unless variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless -%}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  </quick-add>
+{%- endif -%}

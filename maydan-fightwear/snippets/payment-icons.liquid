@@ -1,0 +1,13 @@
+{%- comment -%}
+  Accepted payment icons — pulled from the store's enabled payment providers.
+  Uses Shopify's payment_type_svg_tag so the icons always match live settings.
+{%- endcomment -%}
+{%- if shop.enabled_payment_types.size > 0 -%}
+  <div class="footer__payment" role="list" aria-label="{{ 'sections.footer.payment' | t }}">
+    {%- for type in shop.enabled_payment_types -%}
+      <span role="listitem" class="footer__payment-icon">
+        {{ type | payment_type_svg_tag: class: 'icon icon--payment' }}
+      </span>
+    {%- endfor -%}
+  </div>
+{%- endif -%}

@@ -1,0 +1,118 @@
+{%- comment -%}
+  MAYDAN product card.
+  Accepts:
+    card_product   - product object (required)
+    lazy           - bool (default true) — set false for above-the-fold cards
+    show_quick_add - bool (default from settings)
+    sizes          - responsive sizes attribute string
+  Never invents imagery: shows a branded placeholder when no product image exists.
+{%- endcomment -%}
+{%- liquid
+  assign product = card_product
+  assign ratio = 0.75
+  if settings.card_image_ratio == 'square'
+    assign ratio = 1
+  elsif settings.card_image_ratio == 'adapt' and product.featured_media
+    assign ratio = product.featured_media.aspect_ratio | default: 0.75
+  endif
+
+  assign second_image = product.media[1].preview_image
+  assign has_image = false
+  if product.featured_media
+    assign has_image = true
+  endif
+
+  assign color_option = null
+  for option in product.options_with_values
+    assign dc = option.name | downcase
+    if dc == 'color' or dc == 'colour'
+      assign color_option = option
+      break
+    endif
+  endfor
+
+  assign loading_attr = 'lazy'
+  if lazy == false
+    assign loading_attr = 'eager'
+  endif
+  assign card_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+-%}
+
+{%- if product and product != empty -%}
+  <div class="card {% if settings.animations_hover_effect == 'zoom' %}card--zoom{% endif %} reveal" data-product-card>
+    <a href="{{ product.url }}" class="card__media" aria-label="{{ product.title | escape }}"
+      style="--card-image-ratio: {{ ratio }};">
+      {%- render 'product-badges', product: product -%}
+
+      {%- if has_image -%}
+        {{
+          product.featured_media
+          | image_url: width: 800
+          | image_tag:
+            loading: loading_attr,
+            widths: '200,300,400,500,600,800,1000',
+            sizes: card_sizes,
+            class: 'card__image card__image--primary',
+            alt: product.featured_media.alt | default: product.title
+        }}
+        {%- if settings.card_show_second_image and second_image -%}
+          {{
+            second_image
+            | image_url: width: 800
+            | image_tag:
+              loading: 'lazy',
+              widths: '200,300,400,500,600,800,1000',
+              sizes: card_sizes,
+              class: 'card__image card__image--secondary',
+              alt: second_image.alt | default: product.title
+          }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="card__placeholder" role="img" aria-label="{{ product.title | escape }}">
+          <span class="card__placeholder-mark">MAYDAN</span>
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- if show_quick_add != false and settings.card_show_quick_add -%}
+      <div class="card__quick-add">
+        {%- render 'quick-add', product: product -%}
+      </div>
+    {%- endif -%}
+
+    <div class="card__content">
+      {%- if settings.card_show_type and product.type != blank -%}
+        <span class="card__type">{{ product.type }}</span>
+      {%- endif -%}
+
+      <h3 class="card__title">
+        <a href="{{ product.url }}">{{ product.title }}</a>
+      </h3>
+
+      <div class="card__meta">
+        {%- render 'price', product: product -%}
+      </div>
+
+      {%- if settings.card_show_color and color_option -%}
+        {%- if settings.card_show_swatches -%}
+          <div class="swatch-list" aria-label="Available colors">
+            {%- assign swatch_limit = 5 -%}
+            {%- for value in color_option.values limit: swatch_limit -%}
+              {%- assign variant_for_value = value.variant -%}
+              <a href="{% if variant_for_value %}{{ product.url }}?variant={{ variant_for_value.id }}{% else %}{{ product.url }}{% endif %}"
+                class="swatch"
+                style="{% render 'color-swatch', value: value, swatch: value.swatch %}"
+                title="{{ value | escape }}"
+                aria-label="{{ value | escape }}"></a>
+            {%- endfor -%}
+            {%- if color_option.values.size > swatch_limit -%}
+              <span class="swatch swatch--more">+{{ color_option.values.size | minus: swatch_limit }}</span>
+            {%- endif -%}
+          </div>
+        {%- else -%}
+          <span class="card__color">{{ color_option.values.size }} colors</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

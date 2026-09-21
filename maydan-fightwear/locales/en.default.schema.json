@@ -1,0 +1,259 @@
+{
+  "settings": {
+    "logo": {
+      "name": "Logo",
+      "logo": {
+        "label": "Logo",
+        "info": "Upload the official MAYDAN logo (transparent PNG or SVG). Do not modify its proportions."
+      },
+      "logo_light": {
+        "label": "Logo — light version (over hero)",
+        "info": "Optional light logo shown over the transparent hero header. Falls back to the main logo."
+      },
+      "logo_width": {
+        "label": "Desktop logo width"
+      },
+      "logo_width_mobile": {
+        "label": "Mobile logo width"
+      },
+      "favicon": {
+        "label": "Favicon",
+        "info": "Will be scaled down to 32 x 32 px"
+      }
+    },
+    "colors": {
+      "name": "Colors",
+      "background": {
+        "label": "Background"
+      },
+      "background_gradient": {
+        "label": "Background gradient",
+        "info": "Optional. Replaces the solid background where supported."
+      },
+      "text": {
+        "label": "Text"
+      },
+      "button": {
+        "label": "Solid button / accent"
+      },
+      "button_label": {
+        "label": "Solid button label"
+      },
+      "secondary_button_label": {
+        "label": "Outline button label"
+      },
+      "shadow": {
+        "label": "Shadow"
+      },
+      "brand_accents_header": "Brand palette reference",
+      "brand_accents_info": "MAYDAN brand palette — Black #090909, Bone #EEE9DF, Charcoal #181818, Muted red #A31E27, Grey #A7A39B. Keep black and bone dominant; use red only for small accents, buttons, hovers and promo banners.",
+      "accent_red": {
+        "label": "Muted red accent",
+        "info": "Used for small accents, sale badges, promo banners and hover states."
+      },
+      "accent_bone": {
+        "label": "Bone / off-white"
+      },
+      "accent_grey": {
+        "label": "Neutral grey"
+      }
+    },
+    "typography": {
+      "name": "Typography",
+      "headings_header": "Headings",
+      "heading_font": {
+        "label": "Heading font",
+        "info": "Use a bold, condensed typeface for the aggressive editorial look (e.g. Archivo Narrow, Oswald)."
+      },
+      "heading_uppercase": {
+        "label": "Uppercase headings"
+      },
+      "heading_letter_spacing": {
+        "label": "Heading letter spacing"
+      },
+      "heading_scale": {
+        "label": "Heading size scale"
+      },
+      "body_header": "Body text",
+      "body_font": {
+        "label": "Body font"
+      },
+      "body_scale": {
+        "label": "Body size scale"
+      }
+    },
+    "layout": {
+      "name": "Layout",
+      "page_width": {
+        "label": "Maximum page width"
+      },
+      "spacing_sections": {
+        "label": "Space between sections"
+      },
+      "grid_header": "Product grid",
+      "spacing_grid_horizontal": {
+        "label": "Horizontal grid spacing"
+      },
+      "spacing_grid_vertical": {
+        "label": "Vertical grid spacing"
+      }
+    },
+    "buttons": {
+      "name": "Buttons",
+      "radius": {
+        "label": "Corner radius"
+      },
+      "border_thickness": {
+        "label": "Border thickness"
+      },
+      "uppercase": {
+        "label": "Uppercase button text"
+      },
+      "letter_spacing": {
+        "label": "Button letter spacing"
+      }
+    },
+    "product_cards": {
+      "name": "Product cards",
+      "image_ratio": {
+        "label": "Image ratio",
+        "adapt": "Adapt to image",
+        "portrait": "Portrait",
+        "square": "Square"
+      },
+      "show_second_image": {
+        "label": "Show second image on hover"
+      },
+      "show_vendor": {
+        "label": "Show vendor"
+      },
+      "show_type": {
+        "label": "Show product type"
+      },
+      "show_color": {
+        "label": "Show color name"
+      },
+      "show_swatches": {
+        "label": "Show color swatches"
+      },
+      "show_quick_add": {
+        "label": "Show quick-add button"
+      },
+      "badges_header": "Badges",
+      "show_sale_badge": {
+        "label": "Show sale badge"
+      },
+      "show_sold_out_badge": {
+        "label": "Show sold-out badge"
+      },
+      "show_low_stock_badge": {
+        "label": "Show low-stock badge"
+      },
+      "units_items": "items",
+      "low_stock_threshold": {
+        "label": "Low-stock threshold"
+      },
+      "new_badge_tag": {
+        "label": "New badge product tag",
+        "info": "Products with this tag show a NEW badge."
+      }
+    },
+    "cart": {
+      "name": "Cart",
+      "type": {
+        "label": "Cart type",
+        "drawer": "Slide-out drawer",
+        "page": "Page only",
+        "notification": "Popup notification"
+      },
+      "show_free_shipping_bar": {
+        "label": "Show free-shipping progress bar"
+      },
+      "units_currency": "$",
+      "free_shipping_threshold": {
+        "label": "Free-shipping threshold",
+        "info": "Set to match your Shopify shipping settings. This is display only — configure the real rate in Settings → Shipping."
+      },
+      "show_recommendations": {
+        "label": "Show recommended add-on product"
+      },
+      "show_note": {
+        "label": "Enable cart note"
+      }
+    },
+    "search": {
+      "name": "Search",
+      "predictive_enabled": {
+        "label": "Enable predictive search"
+      },
+      "show_price": {
+        "label": "Show product price in results"
+      },
+      "show_vendor": {
+        "label": "Show vendor in results"
+      }
+    },
+    "social": {
+      "name": "Social media",
+      "instagram": {
+        "label": "Instagram URL",
+        "info": "https://instagram.com/maydan"
+      },
+      "tiktok": {
+        "label": "TikTok URL"
+      },
+      "youtube": {
+        "label": "YouTube URL"
+      },
+      "x": {
+        "label": "X (Twitter) URL"
+      },
+      "facebook": {
+        "label": "Facebook URL"
+      }
+    },
+    "social_sharing": {
+      "name": "SEO & social sharing",
+      "image": {
+        "label": "Default social sharing image",
+        "info": "Used for Open Graph / Twitter cards when a page has no image. 1200 x 630 px recommended."
+      },
+      "title_suffix": {
+        "label": "Title tag suffix",
+        "info": "Appended to page titles, e.g. \"| MAYDAN Fightwear\"."
+      }
+    },
+    "analytics": {
+      "name": "Analytics & marketing",
+      "info": "Enter IDs to enable tracking. Scripts load asynchronously and never block rendering. For most stores, prefer Shopify's built-in Google & Meta channels; use these fields only if you manage tags directly.",
+      "ga4": {
+        "label": "Google Analytics 4 Measurement ID",
+        "info": "e.g. G-XXXXXXXXXX"
+      },
+      "meta_pixel": {
+        "label": "Meta (Facebook) Pixel ID"
+      },
+      "tiktok_pixel": {
+        "label": "TikTok Pixel ID"
+      },
+      "klaviyo": {
+        "label": "Klaviyo public API key",
+        "info": "Enables Klaviyo onsite. Leave blank to use Shopify Email instead."
+      },
+      "custom_header": "Other integrations",
+      "custom_info": "Google Merchant Center, Meta catalog and TikTok Shop catalogs are configured in Shopify Admin → Sales channels. Product structured data is already output for Merchant Center."
+    },
+    "animations": {
+      "name": "Animations",
+      "reveal_on_scroll": {
+        "label": "Reveal sections on scroll",
+        "info": "Subtle fade-up. Automatically disabled for visitors who prefer reduced motion."
+      },
+      "hover": {
+        "label": "Product image hover effect",
+        "none": "None",
+        "zoom": "Subtle zoom"
+      }
+    }
+  }
+}

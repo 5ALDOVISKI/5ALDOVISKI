@@ -1,0 +1,108 @@
+{
+  "current": {
+    "logo_width": 150,
+    "logo_width_mobile": 110,
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#090909",
+          "background_gradient": "",
+          "text": "#EEE9DF",
+          "button": "#A31E27",
+          "button_label": "#EEE9DF",
+          "secondary_button_label": "#EEE9DF",
+          "shadow": "#000000"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#EEE9DF",
+          "background_gradient": "",
+          "text": "#090909",
+          "button": "#090909",
+          "button_label": "#EEE9DF",
+          "secondary_button_label": "#090909",
+          "shadow": "#A7A39B"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#181818",
+          "background_gradient": "",
+          "text": "#EEE9DF",
+          "button": "#A31E27",
+          "button_label": "#EEE9DF",
+          "secondary_button_label": "#EEE9DF",
+          "shadow": "#000000"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#A31E27",
+          "background_gradient": "",
+          "text": "#EEE9DF",
+          "button": "#090909",
+          "button_label": "#EEE9DF",
+          "secondary_button_label": "#EEE9DF",
+          "shadow": "#000000"
+        }
+      },
+      "scheme-5": {
+        "settings": {
+          "background": "#EEE9DF",
+          "background_gradient": "",
+          "text": "#181818",
+          "button": "#A31E27",
+          "button_label": "#EEE9DF",
+          "secondary_button_label": "#181818",
+          "shadow": "#A7A39B"
+        }
+      }
+    },
+    "accent_red": "#A31E27",
+    "accent_bone": "#EEE9DF",
+    "accent_grey": "#A7A39B",
+    "heading_font": "archivo_n7",
+    "heading_uppercase": true,
+    "heading_letter_spacing": 1,
+    "heading_scale": 120,
+    "body_font": "assistant_n4",
+    "body_scale": 100,
+    "page_width": 1520,
+    "spacing_sections": 0,
+    "spacing_grid_horizontal": 12,
+    "spacing_grid_vertical": 12,
+    "buttons_radius": 0,
+    "buttons_border_thickness": 1,
+    "buttons_uppercase": true,
+    "buttons_letter_spacing": 1.5,
+    "card_image_ratio": "portrait",
+    "card_show_second_image": true,
+    "card_show_vendor": false,
+    "card_show_type": true,
+    "card_show_color": true,
+    "card_show_swatches": true,
+    "card_show_quick_add": true,
+    "card_show_sale_badge": true,
+    "card_show_sold_out_badge": true,
+    "card_show_low_stock_badge": true,
+    "card_low_stock_threshold": 6,
+    "card_new_badge_tag": "new",
+    "cart_type": "drawer",
+    "cart_show_free_shipping_bar": true,
+    "cart_free_shipping_threshold": 100,
+    "cart_show_recommendations": true,
+    "cart_show_note": false,
+    "predictive_search_enabled": true,
+    "predictive_search_show_price": true,
+    "predictive_search_show_vendor": false,
+    "animations_reveal_on_scroll": true,
+    "animations_hover_effect": "zoom"
+  },
+  "presets": {
+    "MAYDAN Fightwear": {
+      "heading_font": "archivo_n7",
+      "body_font": "assistant_n4"
+    }
+  }
+}
