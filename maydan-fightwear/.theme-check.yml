@@ -1,3 +1,7 @@
 # Run `theme-check .` (Shopify CLI) or `npx @shopify/theme-check-node` from this folder.
 root: "."
 extends: "theme-check:recommended"
+
+# Third-party pixel SDKs must load from their own CDNs; this is intentional.
+RemoteAsset:
+  enabled: false

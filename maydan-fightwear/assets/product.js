@@ -124,7 +124,7 @@
         el.textContent = el.dataset.outText || 'Sold out';
       } else if (v.inventory_management && v.inventory_quantity != null && v.inventory_quantity > 0 && v.inventory_quantity <= parseInt(el.dataset.lowThreshold || '6', 10)) {
         el.classList.add('product__inventory--low');
-        el.textContent = (el.dataset.lowText || 'Low stock — {n} left').replace('{n}', v.inventory_quantity);
+        el.textContent = (el.dataset.lowText || 'Low stock — QTY_PH left').replace('QTY_PH', v.inventory_quantity);
       } else {
         el.classList.add('product__inventory--in');
         el.textContent = el.dataset.inText || 'In stock';

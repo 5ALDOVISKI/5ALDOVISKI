@@ -115,7 +115,7 @@
             <span class="product__inventory {{ inv_class }}" data-inventory-status
               data-low-threshold="{{ low_threshold }}"
               data-in-text="{{ 'products.product.inventory_in_stock' | t }}"
-              data-low-text="{{ 'products.product.inventory_low_stock_show_count' | t: quantity: '{n}' }}"
+              data-low-text="{{ 'products.product.inventory_low_stock_show_count' | t: quantity: 'QTY_PH' }}"
               data-out-text="{{ 'products.product.inventory_out_of_stock' | t }}"
               {{ block.shopify_attributes }}>{{ inv_text }}</span>
 

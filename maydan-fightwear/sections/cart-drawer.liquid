@@ -1,8 +1,10 @@
-{{ 'component-cart.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Slide-out cart drawer. Re-rendered via the Section Rendering API on add/update.
   Everything that changes lives inside [data-cart-drawer-inner].
+  Rendered only when the cart type is "drawer".
 {%- endcomment -%}
+{%- if settings.cart_type == 'drawer' -%}
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
 <cart-drawer class="{% if cart == empty %}is-empty{% endif %}" aria-hidden="true">
   <div class="cart-drawer__overlay" data-cart-overlay></div>
   <div class="cart-drawer__panel color-scheme-1" role="dialog" aria-modal="true" aria-label="{{ 'sections.cart.title' | t }}">
@@ -103,6 +105,7 @@
     </div>
   </div>
 </cart-drawer>
+{%- endif -%}
 
 {% schema %}
 {

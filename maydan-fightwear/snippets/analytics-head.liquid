@@ -1,8 +1,6 @@
-{% # theme-check-disable RemoteAsset %}
 {%- comment -%}
   Analytics & marketing tags — loaded asynchronously so they never block render.
-  RemoteAsset is intentionally disabled: pixel SDKs (GA4, Meta, TikTok, Klaviyo)
-  must be served from their own CDNs and cannot be self-hosted.
+  Pixel SDKs (GA4, Meta, TikTok, Klaviyo) load from their own CDNs by design.
   NOTE: For most stores, Shopify's built-in Google & Meta sales channels and
   Customer Events (Settings > Customer events / Custom pixels) are the preferred,
   consent-aware way to add tracking. These fields are provided for teams that

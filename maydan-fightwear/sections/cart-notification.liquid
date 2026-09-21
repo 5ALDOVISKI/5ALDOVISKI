@@ -1,8 +1,9 @@
-{{ 'component-cart.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Cart notification popup (cart type = notification). Re-rendered on add via the
   Section Rendering API; JS swaps [data-notification-inner].
 {%- endcomment -%}
+{%- if settings.cart_type == 'notification' -%}
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
 <cart-notification aria-live="polite" aria-hidden="true">
   <div class="cart-notification__inner color-scheme-1" role="dialog" aria-label="{{ 'sections.cart.title' | t }}">
     <div data-notification-inner>
@@ -37,6 +38,7 @@
     </div>
   </div>
 </cart-notification>
+{%- endif -%}
 
 {% schema %}
 {

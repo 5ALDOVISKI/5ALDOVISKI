@@ -160,12 +160,13 @@
 
     {% sections 'footer-group' %}
 
-    {%- comment -%} Cart drawer/notification are sections so the Section Rendering API can refresh them {%- endcomment -%}
-    {%- if settings.cart_type == 'drawer' -%}
-      {% section 'cart-drawer' %}
-    {%- elsif settings.cart_type == 'notification' -%}
-      {% section 'cart-notification' %}
-    {%- endif -%}
+    {%- comment -%}
+      Cart drawer/notification are sections so the Section Rendering API can refresh them.
+      They are rendered unconditionally (the section tag cannot be wrapped in control
+      flow); each section outputs its markup only for the matching cart type.
+    {%- endcomment -%}
+    {% section 'cart-drawer' %}
+    {% section 'cart-notification' %}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
