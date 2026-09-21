@@ -1,0 +1,3 @@
+# Run `theme-check .` (Shopify CLI) or `npx @shopify/theme-check-node` from this folder.
+root: "."
+extends: "theme-check:recommended"
