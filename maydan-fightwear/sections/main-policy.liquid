@@ -1,0 +1,21 @@
+{%- comment -%}
+  Store policy pages (Privacy Policy, Terms of Service, Refund Policy, Shipping
+  Policy). Content comes from Settings > Policies — never hard-coded here.
+{%- endcomment -%}
+<div class="page-width page-width--narrow color-{{ section.settings.color_scheme }}" style="padding-top:5rem;padding-bottom:6rem;">
+  <header style="margin-bottom:2.5rem;">
+    <h1 class="h1">{{ page.title }}</h1>
+  </header>
+  <div class="rte">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Policy",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" }
+  ]
+}
+{% endschema %}

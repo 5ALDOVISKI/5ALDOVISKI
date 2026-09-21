@@ -1,5 +1,7 @@
+{% # theme-check-disable RemoteAsset %}
 {%- comment -%}
   Body-level analytics fallbacks (noscript pixels). Rendered right after <body>.
+  RemoteAsset disabled: the Meta noscript pixel must load from facebook.com.
 {%- endcomment -%}
 {%- if settings.meta_pixel_id != blank -%}
   <noscript>

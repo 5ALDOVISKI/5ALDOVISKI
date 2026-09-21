@@ -1,0 +1,91 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": { "type": "vendor" },
+        "title": { "type": "title" },
+        "price": { "type": "price", "settings": { "show_tax_note": true } },
+        "inventory": { "type": "inventory" },
+        "variant_picker": { "type": "variant_picker", "settings": { "show_size_guide": true } },
+        "quantity": { "type": "quantity_selector" },
+        "buy_buttons": { "type": "buy_buttons", "settings": { "show_dynamic_checkout": true } },
+        "shipping": { "type": "shipping_note", "settings": { "shipping_text": "Ships within 1–2 business days.", "delivery_text": "US delivery in 3–5 business days." } },
+        "fit": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Fit",
+            "content": "<p>Close compression fit with a slightly easier chest and unrestricted shoulder movement.</p>",
+            "metafield_key": "fit"
+          }
+        },
+        "material": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Material",
+            "content": "<p>Fabric composition and weight are confirmed per product. See specifications.</p>",
+            "metafield_key": "fabric_composition"
+          }
+        },
+        "construction": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Construction",
+            "content": "<p>Four-way stretch, reinforced flatlock seams and secure hem construction.</p>",
+            "metafield_key": "construction"
+          }
+        },
+        "care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care",
+            "content": "<p>Machine wash cold with similar colors. Wash inside out. Do not bleach. Do not use fabric softener. Hang dry. Do not iron printed areas. Do not dry clean.</p>",
+            "metafield_key": "care_instructions"
+          }
+        },
+        "specs": { "type": "product_specs", "settings": { "heading": "Specifications" } },
+        "share": { "type": "share" }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "inventory",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "shipping",
+        "fit",
+        "material",
+        "construction",
+        "care",
+        "specs",
+        "share"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "enable_sticky_bar": true,
+        "low_stock_threshold": 6
+      }
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Complete the kit",
+        "products_to_show": 4,
+        "columns": "4"
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "Recently viewed",
+        "products_to_show": 4,
+        "columns": "4"
+      }
+    }
+  },
+  "order": ["main", "related", "recently_viewed"]
+}

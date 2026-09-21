@@ -1,0 +1,82 @@
+{{ 'component-search.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  Search results page — products (as cards) plus pages/articles.
+{%- endcomment -%}
+<div class="page-width search-page color-{{ section.settings.color_scheme }}">
+  <div class="search-page__header">
+    <h1 class="h1">{{ 'templates.search.title' | t }}</h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <input type="hidden" name="type" value="product">
+      <label class="visually-hidden" for="SearchPageInput">{{ 'general.search.search' | t }}</label>
+      <input id="SearchPageInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}">
+      <button type="submit" class="button">{{ 'general.search.search' | t }}</button>
+    </form>
+  </div>
+
+  {%- if search.performed -%}
+    {%- if search.results_count == 0 -%}
+      <p class="h3">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+    {%- else -%}
+      <p class="collection-toolbar__count" style="padding-bottom:2rem;">
+        {{ 'general.search.results_with_count_and_term' | t: count: search.results_count, terms: search.terms }}
+      </p>
+      {%- paginate search.results by section.settings.products_per_page -%}
+        <div class="product-grid product-grid--{{ section.settings.columns }}">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {%- assign card_lazy = true -%}
+              {%- if forloop.index0 < 4 -%}{%- assign card_lazy = false -%}{%- endif -%}
+              {%- render 'card-product', card_product: item, lazy: card_lazy -%}
+            {%- else -%}
+              <div class="card reveal">
+                <a href="{{ item.url }}" class="card__media" style="--card-image-ratio:1.4;">
+                  {%- if item.image or item.featured_image -%}
+                    {{ item.image | default: item.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: item.title | escape }}
+                  {%- else -%}
+                    <div class="card__placeholder"><span class="card__placeholder-mark" style="font-size:1.2rem">{{ item.object_type | capitalize }}</span></div>
+                  {%- endif -%}
+                </a>
+                <div class="card__content">
+                  <span class="card__type">{{ item.object_type | capitalize }}</span>
+                  <h3 class="card__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  {%- else -%}
+    <p>{{ 'general.search.placeholder' | t }}</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search results",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "label": "Results per page", "default": 24 }
+  ]
+}
+{% endschema %}

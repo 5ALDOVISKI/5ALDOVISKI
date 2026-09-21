@@ -12,7 +12,8 @@
 <section class="drop-banner color-scheme-1 section-spacing" data-section-id="{{ section.id }}">
   <div class="drop-banner__media">
     {%- if has_image -%}
-      {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '800,1200,1800,2400', sizes: '100vw', alt: section.settings.heading | escape, class: 'drop-banner__image' }}
+      {%- assign banner_alt = section.settings.heading | default: 'MAYDAN campaign' | escape -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '800,1200,1800,2400', sizes: '100vw', class: 'drop-banner__image', alt: banner_alt }}
     {%- else -%}
       <div class="drop-banner__placeholder"></div>
       <span class="placeholder-tag">Campaign banner image — replace in theme editor</span>

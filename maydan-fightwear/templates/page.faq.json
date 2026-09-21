@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "How does MAYDAN sizing run?", "answer": "<p>Our gear runs true to size with a compression fit. Check the size guide on each product page for measurements.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "How long does shipping take?", "answer": "<p>US orders ship within 1–2 business days and typically arrive in 3–5 business days.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "What is your return policy?", "answer": "<p>Unworn items with tags can be returned within 30 days. See Shipping &amp; Returns.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Do you ship internationally?", "answer": "<p>Yes — international rates and duties are calculated at checkout based on your destination.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "overline": "Support",
+        "heading": "Frequently asked questions"
+      }
+    }
+  },
+  "order": ["main"]
+}

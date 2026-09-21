@@ -1,0 +1,58 @@
+{%- comment -%} Address form fields. Accepts: form (customer_address form). {%- endcomment -%}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;">
+  <label class="field" style="flex-direction:column;align-items:flex-start;">
+    <span class="field__label">{{ 'customer.addresses.first_name' | t }}</span>
+    {{ form.first_name }}
+  </label>
+  <label class="field" style="flex-direction:column;align-items:flex-start;">
+    <span class="field__label">{{ 'customer.addresses.last_name' | t }}</span>
+    {{ form.last_name }}
+  </label>
+</div>
+<div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.4rem;">
+  <label class="field__label">{{ 'customer.addresses.company' | t }}</label>
+  {{ form.company }}
+</div>
+<div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.4rem;">
+  <label class="field__label">{{ 'customer.addresses.address1' | t }}</label>
+  {{ form.address1 }}
+</div>
+<div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.4rem;">
+  <label class="field__label">{{ 'customer.addresses.address2' | t }}</label>
+  {{ form.address2 }}
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.4rem;">
+  <div class="field" style="flex-direction:column;align-items:flex-start;">
+    <label class="field__label">{{ 'customer.addresses.city' | t }}</label>
+    {{ form.city }}
+  </div>
+  <div class="field" style="flex-direction:column;align-items:flex-start;">
+    <label class="field__label">{{ 'customer.addresses.zip' | t }}</label>
+    {{ form.zip }}
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.4rem;">
+  <div class="field" style="flex-direction:column;align-items:flex-start;">
+    <label class="field__label" for="AddressCountry-{{ form.id }}">{{ 'customer.addresses.country' | t }}</label>
+    <select id="AddressCountry-{{ form.id }}" name="address[country]" data-address-country data-default="{{ form.country }}" data-province-id="AddressProvince-{{ form.id }}" data-province-container="AddressProvinceContainer-{{ form.id }}">
+      {{ country_option_tags }}
+    </select>
+  </div>
+  <div class="field" style="flex-direction:column;align-items:flex-start;" id="AddressProvinceContainer-{{ form.id }}">
+    <label class="field__label" for="AddressProvince-{{ form.id }}">{{ 'customer.addresses.province' | t }}</label>
+    <select id="AddressProvince-{{ form.id }}" name="address[province]" data-default="{{ form.province }}"></select>
+  </div>
+</div>
+<div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.4rem;">
+  <label class="field__label">{{ 'customer.addresses.phone' | t }}</label>
+  {{ form.phone }}
+</div>
+
+<script>
+  (function () {
+    if (typeof Shopify === 'undefined' || !Shopify.CountryProvinceSelector) return;
+    new Shopify.CountryProvinceSelector('AddressCountry-{{ form.id }}', 'AddressProvince-{{ form.id }}', {
+      hideElement: 'AddressProvinceContainer-{{ form.id }}'
+    });
+  })();
+</script>

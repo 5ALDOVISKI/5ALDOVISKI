@@ -1,0 +1,76 @@
+{%- comment -%} Customer addresses: list, add, edit, delete. {%- endcomment -%}
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+<div class="page-width color-{{ section.settings.color_scheme }}" style="max-width:80rem;padding-top:4rem;padding-bottom:6rem;">
+  <a href="{{ routes.account_url }}" class="link-underline">&larr; {{ 'customer.account.return' | t }}</a>
+  <h1 class="h1" style="margin:1.6rem 0 3rem;">{{ 'customer.addresses.title' | t }}</h1>
+
+  {%- comment -%} Add new {%- endcomment -%}
+  <details class="collapsible" style="border-top:none;">
+    <summary class="collapsible__summary" style="justify-content:flex-start;gap:1rem;">
+      {% render 'icon', icon: 'plus', size: 16 %} {{ 'customer.addresses.add_new' | t }}
+    </summary>
+    <div class="collapsible__content">
+      {%- form 'customer_address', customer.new_address -%}
+        {%- render 'address-fields', form: form -%}
+        <label style="display:flex;gap:1rem;align-items:center;font-size:1.3rem;margin:1.4rem 0;">
+          {{ form.set_as_default_checkbox }} {{ 'customer.addresses.set_default' | t }}
+        </label>
+        <button type="submit" class="button">{{ 'customer.addresses.add' | t }}</button>
+      {%- endform -%}
+    </div>
+  </details>
+
+  {%- comment -%} Existing addresses {%- endcomment -%}
+  {%- paginate customer.addresses by 6 -%}
+    <div style="display:grid;gap:2rem;grid-template-columns:1fr;margin-top:3rem;" class="account-grid">
+      {%- for address in customer.addresses -%}
+        <div style="border:1px solid rgba(var(--color-foreground),.15);padding:2rem;">
+          {%- if address == customer.default_address -%}<p class="overline">{{ 'customer.addresses.default' | t }}</p>{%- endif -%}
+          <div class="rte" style="opacity:.9;">{{ address | format_address }}</div>
+          <div style="display:flex;gap:1.4rem;margin-top:1.4rem;">
+            <details style="display:inline;">
+              <summary class="link-underline" style="cursor:pointer;list-style:none;">{{ 'customer.addresses.edit' | t }}</summary>
+              <div style="margin-top:1.4rem;">
+                {%- form 'customer_address', address -%}
+                  {%- render 'address-fields', form: form -%}
+                  <label style="display:flex;gap:1rem;align-items:center;font-size:1.3rem;margin:1.4rem 0;">
+                    {{ form.set_as_default_checkbox }} {{ 'customer.addresses.set_default' | t }}
+                  </label>
+                  <button type="submit" class="button button--small">{{ 'customer.addresses.update' | t }}</button>
+                {%- endform -%}
+              </div>
+            </details>
+            <a href="#" class="link-underline" data-address-delete data-url="{{ address.url }}" data-confirm="{{ 'customer.addresses.delete_confirm' | t }}">{{ 'customer.addresses.delete' | t }}</a>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</div>
+
+<script>
+  document.addEventListener('click', function (e) {
+    var del = e.target.closest('[data-address-delete]');
+    if (!del) return;
+    e.preventDefault();
+    if (window.confirm(del.dataset.confirm)) {
+      var f = document.createElement('form');
+      f.method = 'post';
+      f.action = del.dataset.url;
+      f.innerHTML = '<input type="hidden" name="_method" value="delete">';
+      document.body.appendChild(f);
+      f.submit();
+    }
+  });
+</script>
+<style>@media screen and (min-width:750px){.account-grid{grid-template-columns:1fr 1fr;}}</style>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" }
+  ]
+}
+{% endschema %}

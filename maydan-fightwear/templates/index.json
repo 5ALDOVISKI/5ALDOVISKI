@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "overline": { "type": "overline", "settings": { "text": "DROP 001 — AVAILABLE NOW" } },
+        "heading": { "type": "heading", "settings": { "text": "ENTER THE MAYDAN." } },
+        "text": { "type": "text", "settings": { "text": "Technical fightwear built for the rounds that count." } },
+        "buttons": {
+          "type": "buttons",
+          "settings": {
+            "button_1_label": "Shop New Drop",
+            "button_2_label": "Shop All Gear"
+          }
+        }
+      },
+      "block_order": ["overline", "heading", "text", "buttons"],
+      "settings": {
+        "height": "full",
+        "content_alignment": "left",
+        "show_overlay": true,
+        "overlay_opacity": 100,
+        "eager_load": true
+      }
+    },
+    "categories": {
+      "type": "shop-by-category",
+      "blocks": {
+        "rashguards": { "type": "category", "settings": { "title": "Rashguards" } },
+        "shorts": { "type": "category", "settings": { "title": "Fight Shorts" } },
+        "essentials": { "type": "category", "settings": { "title": "Essentials" } }
+      },
+      "block_order": ["rashguards", "shorts", "essentials"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Shop by category"
+      }
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "Latest gear",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_view_all": true
+      }
+    },
+    "drop_banner": {
+      "type": "featured-drop-banner",
+      "settings": {
+        "content_alignment": "left",
+        "overline": "DROP 001",
+        "heading": "MUHARIB",
+        "text": "Made for pressure. Cut for movement.",
+        "button_label": "Shop the Collection"
+      }
+    },
+    "benefits": {
+      "type": "product-benefits",
+      "blocks": {
+        "b1": { "type": "benefit", "settings": { "icon": "stretch", "title": "Four-way stretch" } },
+        "b2": { "type": "benefit", "settings": { "icon": "seam", "title": "Flatlock seams" } },
+        "b3": { "type": "benefit", "settings": { "icon": "hem", "title": "Secure silicone hem" } },
+        "b4": { "type": "benefit", "settings": { "icon": "movement", "title": "Built for no-gi movement" } }
+      },
+      "block_order": ["b1", "b2", "b3", "b4"],
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
+    },
+    "email": {
+      "type": "email-signup",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "overline": "The MAYDAN list",
+        "heading": "GET IN BEFORE THE DROP.",
+        "text": "Early access, private releases and restock alerts."
+      }
+    }
+  },
+  "order": ["hero", "categories", "featured", "drop_banner", "benefits", "email"]
+}

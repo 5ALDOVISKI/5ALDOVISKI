@@ -1,0 +1,75 @@
+{%- comment -%} Customer login + password recovery + optional guest checkout. {%- endcomment -%}
+<div class="page-width color-{{ section.settings.color_scheme }}" style="max-width:52rem;padding-top:5rem;padding-bottom:6rem;">
+  <div id="login" class="customer-auth">
+    <header class="text-center" style="margin-bottom:3rem;">
+      <h1 class="h1">{{ 'customer.login_page.title' | t }}</h1>
+    </header>
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <p class="form__message form__message--error" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+      <div class="field" style="flex-direction:column;align-items:flex-start;margin-bottom:1.6rem;">
+        <label class="field__label" for="login-email">{{ 'customer.login_page.email' | t }}</label>
+        <input type="email" id="login-email" name="customer[email]" autocomplete="email" required>
+      </div>
+      <div class="field" style="flex-direction:column;align-items:flex-start;margin-bottom:1rem;">
+        <label class="field__label" for="login-password">{{ 'customer.login_page.password' | t }}</label>
+        <input type="password" id="login-password" name="customer[password]" autocomplete="current-password" required>
+      </div>
+      <a href="#recover" style="font-size:1.3rem;text-decoration:underline;text-underline-offset:.3rem;">{{ 'customer.login_page.forgot_password' | t }}</a>
+      <button type="submit" class="button button--full" style="margin-top:2rem;">{{ 'customer.login_page.sign_in' | t }}</button>
+    {%- endform -%}
+    {%- if shop.customer_accounts_optional -%}
+      <a href="{{ routes.account_register_url }}" class="button button--secondary button--full" style="margin-top:1rem;">{{ 'customer.login_page.create_account' | t }}</a>
+    {%- endif -%}
+  </div>
+
+  <div id="recover" class="customer-auth" style="display:none;">
+    <header class="text-center" style="margin-bottom:2rem;">
+      <h1 class="h1">{{ 'customer.recover_password.title' | t }}</h1>
+      <p class="measure center-block" style="margin-top:1rem;">{{ 'customer.recover_password.subtext' | t }}</p>
+    </header>
+    {%- form 'recover_customer_password' -%}
+      {%- if form.posted_successfully? -%}
+        {%- assign recover_success = true -%}
+        <p class="form__message form__message--success" role="status">{{ 'customer.recover_password.success' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}{%- assign recover_has_errors = true -%}{%- endif -%}
+      <div class="field" style="flex-direction:column;align-items:flex-start;margin-bottom:1.6rem;">
+        <label class="field__label" for="recover-email">{{ 'customer.login_page.email' | t }}</label>
+        <input type="email" id="recover-email" name="email" autocomplete="email" required>
+      </div>
+      <button type="submit" class="button button--full">{{ 'customer.reset_password.submit' | t }}</button>
+      <a href="#login" class="button button--secondary button--full" style="margin-top:1rem;">{{ 'customer.login_page.cancel' | t }}</a>
+    {%- endform -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    function toggle() {
+      var recover = document.getElementById('recover');
+      var login = document.getElementById('login');
+      if (!recover || !login) return;
+      if (window.location.hash === '#recover') {
+        recover.style.display = 'block';
+        login.style.display = 'none';
+      } else {
+        recover.style.display = 'none';
+        login.style.display = 'block';
+      }
+    }
+    window.addEventListener('hashchange', toggle);
+    toggle();
+    {% if recover_has_errors or recover_success %}if (window.location.hash !== '#recover') { window.location.hash = '#recover'; }{% endif %}
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Login",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" }
+  ]
+}
+{% endschema %}

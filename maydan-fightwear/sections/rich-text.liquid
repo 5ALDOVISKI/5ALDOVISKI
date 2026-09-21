@@ -1,0 +1,78 @@
+{%- comment -%} Editorial rich text block — brand statements, About copy. {%- endcomment -%}
+<section class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="rich-text {% if section.settings.alignment == 'left' %}rich-text--left{% endif %} reveal">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'overline' -%}
+            <p class="overline" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            <h2 class="rich-text__heading {{ block.settings.size }}" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</h2>
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'button' -%}
+            <div style="margin-top:2.4rem;" {{ block.shopify_attributes }}>
+              <a href="{{ block.settings.link | default: '#' }}" class="button {% if block.settings.style == 'secondary' %}button--secondary{% endif %}">{{ block.settings.label | escape }}</a>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" },
+        { "value": "scheme-3", "label": "Charcoal" },
+        { "value": "scheme-4", "label": "Muted red" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    { "type": "overline", "name": "Overline", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "MAYDAN" } ] },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Heading", "default": "Earn your place." },
+        { "type": "select", "id": "size", "label": "Size", "options": [ { "value": "h3", "label": "Small" }, { "value": "h2", "label": "Medium" }, { "value": "h1", "label": "Large" } ], "default": "h2" }
+      ]
+    },
+    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text", "default": "<p>MAYDAN means the ground where people meet, test themselves and earn their place. We build technical fightwear shaped by Arab identity and made for modern combat sports.</p>" } ] },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shop the drop" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "select", "id": "style", "label": "Style", "options": [ { "value": "primary", "label": "Primary" }, { "value": "secondary", "label": "Outline" } ], "default": "primary" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text",
+      "blocks": [ { "type": "overline" }, { "type": "heading" }, { "type": "text" } ]
+    }
+  ]
+}
+{% endschema %}

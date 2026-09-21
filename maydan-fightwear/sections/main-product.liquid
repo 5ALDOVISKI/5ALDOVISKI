@@ -1,3 +1,4 @@
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Conversion-focused product page.
   Blocks let the merchant reorder the info column. Media gallery, size-guide
@@ -9,25 +10,37 @@
   assign product_form_id = 'product-form-' | append: section.id
 -%}
 <section class="page-width color-{{ section.settings.color_scheme }}" data-product-handle="{{ product.handle }}">
+  {%- if section.settings.show_breadcrumbs -%}{%- render 'breadcrumbs' -%}{%- endif -%}
   <div class="product" id="Product-{{ section.id }}">
     {%- comment -%} ---------------- Media gallery ---------------- {%- endcomment -%}
     <div class="product__media-wrapper">
       <div class="product__media-gallery" data-product-media-gallery>
         {%- if product.media.size > 0 -%}
           {%- for media in product.media -%}
-            <div class="product__media-item {% if media.media_type == 'video' or media.media_type == 'external_video' or media.media_type == 'model' %}product__media-item--full{% endif %}" data-media-id="{{ media.id }}">
+            {%- liquid
+              assign img_loading = 'lazy'
+              if forloop.first
+                assign img_loading = 'eager'
+              endif
+              assign is_media_full = false
+              if media.media_type == 'video' or media.media_type == 'external_video' or media.media_type == 'model'
+                assign is_media_full = true
+              endif
+              assign zoom_src = media | image_url: width: 2400
+            -%}
+            <div class="product__media-item {% if is_media_full %}product__media-item--full{% else %}product__media-item--zoom{% endif %}"
+              data-media-id="{{ media.id }}"
+              {% unless is_media_full %}data-zoom-trigger data-zoom-src="{{ zoom_src }}"{% endunless %}>
               {%- case media.media_type -%}
                 {%- when 'image' -%}
                   {{
                     media
                     | image_url: width: 1600
                     | image_tag:
-                      loading: forloop.first,
+                      loading: img_loading,
                       widths: '400,600,800,1000,1200,1600',
                       sizes: '(min-width: 990px) 55vw, 100vw',
                       class: 'product__image',
-                      data-zoom-trigger: '',
-                      data-zoom-src: media | image_url: width: 2400,
                       alt: media.alt | default: product.title | escape
                   }}
                 {%- when 'video' -%}
@@ -133,13 +146,6 @@
                     </div>
                     <div class="variant-picker__options">
                       {%- for value in option.values -%}
-                        {%- liquid
-                          assign variant_for_value = value.variant
-                          assign option_disabled = true
-                          if value.available
-                            assign option_disabled = false
-                          endif
-                        -%}
                         <div class="variant-input">
                           <input type="radio"
                             id="opt-{{ section.id }}-{{ forloop.parentloop.index0 }}-{{ forloop.index0 }}"
@@ -192,13 +198,13 @@
                     </span>
                   </button>
                   <p class="form__message form__message--error" data-form-error hidden role="alert"></p>
+                  {%- if block.settings.show_dynamic_checkout -%}
+                    <div class="product__dynamic-checkout">
+                      {{ form | payment_button }}
+                    </div>
+                  {%- endif -%}
                 {%- endform -%}
               </product-form>
-              {%- if block.settings.show_dynamic_checkout -%}
-                <div class="product__dynamic-checkout">
-                  {{ form | payment_button }}
-                </div>
-              {%- endif -%}
             </div>
 
           {%- when 'shipping_note' -%}
@@ -292,7 +298,14 @@
         <h2 class="h3">{{ 'products.product.size_guide' | t }}</h2>
         <button class="header__icon" data-size-guide-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close' %}</button>
       </div>
-      <div class="rte">{{ pages[section.settings.size_guide_page].content }}</div>
+      {%- assign size_guide_page = pages[section.settings.size_guide_page] -%}
+      {%- if size_guide_page.content != blank -%}
+        <div class="rte">{{ size_guide_page.content }}</div>
+        <a href="{{ size_guide_page.url }}" class="link-underline" style="margin-top:2rem;display:inline-block;">Full size guide</a>
+      {%- else -%}
+        <p>{{ size_guide_page.title | default: 'Size guide' }}</p>
+        <a href="{{ size_guide_page.url }}" class="button button--secondary" style="margin-top:1rem;">Open size guide</a>
+      {%- endif -%}
     </div>
   </div>
 {%- endif -%}
@@ -312,7 +325,7 @@
 <div class="media-zoom-modal" data-zoom-modal role="dialog" aria-modal="true" aria-label="{{ 'products.modal.label' | t }}">
   <div class="media-zoom-modal__overlay"></div>
   <button class="media-zoom-modal__close" data-zoom-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close', size: 28 %}</button>
-  <img src="" alt="">
+  <img src="{{ 'transparent.gif' | shopify_asset_url }}" alt="" width="1200" height="1600">
 </div>
 
 {%- render 'structured-data-product', product: product -%}
@@ -333,6 +346,12 @@
         { "value": "scheme-2", "label": "Bone" }
       ],
       "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
     },
     {
       "type": "checkbox",

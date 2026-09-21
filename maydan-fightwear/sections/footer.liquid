@@ -12,7 +12,7 @@
             <div class="footer__brand" {{ block.shopify_attributes }}>
               {%- if settings.logo != blank -%}
                 <div class="footer__brand-logo">
-                  <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" loading="lazy" width="160">
+                  <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" loading="lazy" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}">
                 </div>
               {%- else -%}
                 <span class="header__logo-text" style="display:block;margin-bottom:1.6rem;">MAYDAN</span>

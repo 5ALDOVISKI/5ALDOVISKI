@@ -1,0 +1,67 @@
+{%- comment -%} Account dashboard: order history + details. {%- endcomment -%}
+<div class="page-width color-{{ section.settings.color_scheme }}" style="padding-top:4rem;padding-bottom:6rem;">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:3rem;">
+    <h1 class="h1">{{ 'customer.account.title' | t }}</h1>
+    <a href="{{ routes.account_logout_url }}" class="link-underline">{{ 'customer.log_out' | t }}</a>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr;gap:3rem;" class="account-grid">
+    <section>
+      <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
+      {%- paginate customer.orders by 20 -%}
+        {%- if customer.orders.size > 0 -%}
+          <div style="overflow-x:auto;">
+            <table class="size-guide-table">
+              <thead>
+                <tr>
+                  <th>{{ 'customer.orders.order_number' | t }}</th>
+                  <th>{{ 'customer.orders.date' | t }}</th>
+                  <th>{{ 'customer.orders.payment_status' | t }}</th>
+                  <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                  <th>{{ 'customer.orders.total' | t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td><a href="{{ order.customer_url }}" class="link-underline">{{ order.name }}</a></td>
+                    <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+                    <td>{{ order.financial_status_label }}</td>
+                    <td>{{ order.fulfillment_status_label }}</td>
+                    <td>{{ order.total_net_amount | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+          {%- render 'pagination', paginate: paginate -%}
+        {%- else -%}
+          <p style="margin-top:1rem;">{{ 'customer.orders.none' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="button" style="margin-top:1.6rem;">{{ 'general.continue_shopping' | t }}</a>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </section>
+
+    <aside>
+      <h2 class="h3">{{ 'customer.account.details' | t }}</h2>
+      <p style="margin-top:1rem;">{{ customer.default_address.name }}</p>
+      {%- if customer.default_address -%}
+        <div class="rte" style="opacity:.8;">{{ customer.default_address | format_address }}</div>
+      {%- endif -%}
+      <a href="{{ routes.account_addresses_url }}" class="link-underline" style="margin-top:1.4rem;display:inline-block;">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+    </aside>
+  </div>
+</div>
+
+<style>
+  @media screen and (min-width: 990px) { .account-grid { grid-template-columns: 1fr 30rem; } }
+</style>
+
+{% schema %}
+{
+  "name": "Account",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" }
+  ]
+}
+{% endschema %}

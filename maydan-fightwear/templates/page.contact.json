@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "contact-form",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "overline": "Get in touch",
+        "heading": "Contact",
+        "subtext": "Questions on sizing, orders or returns — we usually reply within one business day."
+      }
+    }
+  },
+  "order": ["main"]
+}

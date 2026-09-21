@@ -36,17 +36,16 @@
             aria-required="true">
         </div>
         <button type="submit" class="button">{{ 'general.newsletter_form.submit' | t }}</button>
+        {%- if form.errors -%}
+          <p class="newsletter-form__message form__message--error" role="alert">
+            {% render 'icon', icon: 'close', size: 14 %} {{ 'general.newsletter_form.error' | t }}
+          </p>
+        {%- elsif form.posted_successfully? -%}
+          <p class="newsletter-form__message form__message--success" role="status">
+            {% render 'icon', icon: 'check', size: 14 %} {{ 'general.newsletter_form.confirmation' | t }}
+          </p>
+        {%- endif -%}
       {%- endform -%}
-
-      {%- if form.errors -%}
-        <p class="newsletter-form__message form__message--error" role="alert">
-          {% render 'icon', icon: 'close', size: 14 %} {{ 'general.newsletter_form.error' | t }}
-        </p>
-      {%- elsif form.posted_successfully? -%}
-        <p class="newsletter-form__message form__message--success" role="status">
-          {% render 'icon', icon: 'check', size: 14 %} {{ 'general.newsletter_form.confirmation' | t }}
-        </p>
-      {%- endif -%}
 
       <p class="newsletter-form__message" style="opacity:.6;font-size:1.15rem;margin-top:1.2rem;">
         {{ section.settings.consent_text | escape }}

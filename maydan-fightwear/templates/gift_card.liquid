@@ -1,0 +1,45 @@
+{%- comment -%} Standalone gift card template. {%- endcomment -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    {%- assign gc_initial = gift_card.initial_value | money -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: gc_initial, shop: shop.name }}</title>
+    {%- if settings.favicon != blank -%}<link rel="icon" href="{{ settings.favicon | image_url: width: 32 }}">{%- endif -%}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {% style %}
+      :root{--color-background:9,9,9;--color-foreground:238,233,223;--color-accent-red:163,30,39;--color-accent-bone:238,233,223;--color-button:163,30,39;--color-button-text:238,233,223;--color-secondary-button-text:238,233,223;--font-heading-family:Archivo,sans-serif;--font-heading-weight:700;--font-body-family:Assistant,sans-serif;--font-body-weight:400;--font-body-scale:1;--font-heading-scale:1.2;--heading-text-transform:uppercase;--heading-letter-spacing:1px;--buttons-radius:0;--buttons-border-width:1px;--buttons-letter-spacing:1.5px;--buttons-text-transform:uppercase;--page-width:60rem;}
+      body{background:#090909;color:#eee9df;}
+      .gift-card{max-width:48rem;margin:0 auto;padding:5rem 2rem;text-align:center;}
+      .gift-card__amount{font-family:var(--font-heading-family);font-weight:700;font-size:6rem;letter-spacing:1px;margin:1rem 0;}
+      .gift-card__code{display:inline-block;border:1px dashed rgba(238,233,223,.4);padding:1.4rem 2rem;font-size:2rem;letter-spacing:.3rem;margin:2rem 0;}
+      .gift-card__qr{margin:2rem auto;}
+      @media print{.gift-card__actions{display:none;}}
+    {% endstyle %}
+  </head>
+  <body class="template-gift-card">
+    <div class="gift-card">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}" style="width:160px;height:auto;margin:0 auto 2rem;">
+      {%- else -%}
+        <p class="header__logo-text" style="font-size:3rem;">MAYDAN</p>
+      {%- endif -%}
+      <p class="overline">{{ 'gift_cards.issued.subtext' | t }}</p>
+      <div class="gift-card__amount">{{ gift_card.balance | money }}</div>
+      {%- if gift_card.enabled == false or gift_card.expired -%}
+        <p class="form__message form__message--error">{{ 'gift_cards.issued.expired' | t }}</p>
+      {%- endif -%}
+      <div class="gift-card__code">{{ gift_card.code | format_code }}</div>
+      <p style="opacity:.6;font-size:1.2rem;">{{ 'gift_cards.issued.gift_card_code' | t }}</p>
+      {%- if gift_card.expires_on -%}
+        <p style="opacity:.7;">{{ 'gift_cards.issued.expiration_date' | t: expires_on: gift_card.expires_on | date: '%b %d, %Y' }}</p>
+      {%- endif -%}
+      <div class="gift-card__actions" style="display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;">
+        <a href="{{ shop.url }}" class="button">{{ 'gift_cards.issued.shop_link' | t }}</a>
+        <button type="button" class="button button--secondary" onclick="window.print();">{{ 'gift_cards.issued.print_gift_card' | t }}</button>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "sections": {
+    "intro": {
+      "type": "rich-text",
+      "blocks": {
+        "overline": { "type": "overline", "settings": { "text": "MAYDAN" } },
+        "heading": { "type": "heading", "settings": { "text": "Earn your place.", "size": "h1" } },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>MAYDAN means the ground where people meet, test themselves and earn their place. We build technical fightwear shaped by Arab identity and made for modern combat sports.</p>"
+          }
+        }
+      },
+      "block_order": ["overline", "heading", "text"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "alignment": "center"
+      }
+    },
+    "values": {
+      "type": "image-with-text",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "layout": "normal",
+        "overline": "The standard",
+        "heading": "Discipline over noise",
+        "text": "<p>Every piece is cut for movement and built to hold up round after round. Clean lines, honest materials, no shortcuts.</p>",
+        "button_label": "Shop the drop"
+      }
+    }
+  },
+  "order": ["intro", "values"]
+}

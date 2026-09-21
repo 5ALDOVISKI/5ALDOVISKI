@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_banner": true,
+        "banner_height": "standard",
+        "show_description": true,
+        "columns_desktop": "4",
+        "products_per_page": 24,
+        "pagination_type": "pagination",
+        "enable_filtering": true,
+        "enable_sorting": true
+      }
+    }
+  },
+  "order": ["main"]
+}

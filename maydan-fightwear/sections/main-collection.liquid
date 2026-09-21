@@ -1,3 +1,4 @@
+{{ 'component-collection.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Collection page: editable banner, product count, sort, filters (size, color,
   price, availability, product type), responsive grid, quick add, swatches,
@@ -35,6 +36,8 @@
     <h1 class="h1">{{ collection.title | escape }}</h1>
   </div>
 {%- endif -%}
+
+{%- if section.settings.show_breadcrumbs -%}{%- render 'breadcrumbs' -%}{%- endif -%}
 
 <div class="page-width color-{{ section.settings.color_scheme }}">
   <div class="collection-toolbar" data-collection-anchor id="ProductGrid">
@@ -168,7 +171,9 @@
         {%- if collection.products.size > 0 -%}
           <div class="product-grid product-grid--{{ columns }}" data-product-grid>
             {%- for product in collection.products -%}
-              {%- render 'card-product', card_product: product, lazy: forloop.index0 >= 4 -%}
+              {%- assign card_lazy = true -%}
+              {%- if forloop.index0 < 4 -%}{%- assign card_lazy = false -%}{%- endif -%}
+              {%- render 'card-product', card_product: product, lazy: card_lazy -%}
             {%- endfor -%}
           </div>
 
@@ -215,6 +220,7 @@
       "type": "header",
       "content": "Banner"
     },
+    { "type": "checkbox", "id": "show_breadcrumbs", "label": "Show breadcrumbs", "default": true },
     { "type": "checkbox", "id": "show_banner", "label": "Show collection banner", "default": true },
     { "type": "image_picker", "id": "banner_image", "label": "Banner image override", "info": "Falls back to the collection image, then a placeholder." },
     {

@@ -1,0 +1,36 @@
+{%- comment -%} Blog / journal listing. {%- endcomment -%}
+<div class="page-width color-{{ section.settings.color_scheme }}" style="padding-top:4rem;padding-bottom:6rem;">
+  <header class="section-heading reveal">
+    <h1 class="section-heading__title h1">{{ blog.title | escape }}</h1>
+  </header>
+  {%- paginate blog.articles by section.settings.posts_per_page -%}
+    <div class="product-grid product-grid--3">
+      {%- for article in blog.articles -%}
+        <article class="card reveal">
+          <a href="{{ article.url }}" class="card__media" style="--card-image-ratio:1.4;">
+            {%- if article.image -%}
+              {{ article.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '400,600,800', sizes: '(min-width:750px) 33vw, 100vw', alt: article.title | escape }}
+            {%- else -%}
+              <div class="card__placeholder"><span class="card__placeholder-mark">MAYDAN</span></div>
+            {%- endif -%}
+          </a>
+          <div class="card__content">
+            <span class="card__type">{{ article.published_at | date: '%b %d, %Y' }}</span>
+            <h2 class="card__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+            {%- if article.excerpt_or_content != blank -%}<p class="card__color">{{ article.excerpt_or_content | strip_html | truncatewords: 20 }}</p>{%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</div>
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" },
+    { "type": "range", "id": "posts_per_page", "min": 3, "max": 24, "step": 3, "label": "Posts per page", "default": 9 }
+  ]
+}
+{% endschema %}

@@ -1,3 +1,4 @@
+{%- if section.settings.show_search -%}{{ 'component-search.css' | asset_url | stylesheet_tag }}{%- endif -%}
 {%- comment -%}
   MAYDAN header.
   - Transparent over the hero on the homepage, solid black sticky header on scroll.
@@ -30,8 +31,9 @@
     <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
       <ul class="header__menu-list" role="list">
         {%- for link in menu.links -%}
+          {%- assign link_title_norm = link.title | downcase | strip -%}
           {%- assign is_highlight = false -%}
-          {%- if highlight != blank and link.title | downcase | strip == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
+          {%- if highlight != blank and link_title_norm == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
           <li class="header__menu-item-wrapper">
             {%- if link.links.size > 0 -%}
               <a href="{{ link.url }}" class="header__menu-item {% if is_highlight %}header__menu-item--highlight{% endif %}" aria-expanded="false" aria-haspopup="true">
@@ -65,7 +67,7 @@
           <span class="header__logo-text">MAYDAN</span>
         {%- endif -%}
         {%- if section.settings.arabic_logo != blank -%}
-          <img class="header__logo-arabic" src="{{ section.settings.arabic_logo | image_url: width: 300 }}" alt="{{ section.settings.arabic_logo.alt | default: shop.name | escape }}" loading="lazy" style="height:2.2rem;width:auto;margin-inline-start:1rem;">
+          <img class="header__logo-arabic" src="{{ section.settings.arabic_logo | image_url: width: 300 }}" alt="{{ section.settings.arabic_logo.alt | default: shop.name | escape }}" loading="lazy" width="{{ section.settings.arabic_logo.width }}" height="{{ section.settings.arabic_logo.height }}" style="height:2.2rem;width:auto;margin-inline-start:1rem;">
         {%- endif -%}
       </a>
     </h1>
@@ -99,7 +101,7 @@
     <div class="mobile-nav__header color-scheme-1">
       <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name | escape }}">
         {%- if settings.logo != blank -%}
-          <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" style="width:{{ settings.logo_width_mobile }}px;height:auto;">
+          <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}" style="width:{{ settings.logo_width_mobile }}px;height:auto;">
         {%- else -%}
           <span class="header__logo-text">MAYDAN</span>
         {%- endif -%}
@@ -112,8 +114,9 @@
     <nav class="mobile-nav__body" aria-label="{{ 'sections.header.menu' | t }}">
       <ul role="list">
         {%- for link in menu.links -%}
+          {%- assign link_title_norm = link.title | downcase | strip -%}
           {%- assign is_highlight = false -%}
-          {%- if highlight != blank and link.title | downcase | strip == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
+          {%- if highlight != blank and link_title_norm == highlight -%}{%- assign is_highlight = true -%}{%- endif -%}
           <li>
             {%- if link.links.size > 0 -%}
               <button class="mobile-nav__link {% if is_highlight %}mobile-nav__link--highlight{% endif %}" data-mobile-submenu-toggle aria-expanded="false">
