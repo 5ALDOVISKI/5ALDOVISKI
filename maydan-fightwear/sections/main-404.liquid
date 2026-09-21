@@ -1,0 +1,13 @@
+{%- comment -%} 404 page. {%- endcomment -%}
+<div class="color-scheme-1" style="min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8rem 1.5rem;">
+  <div class="reveal">
+    <p class="overline">404</p>
+    <h1 class="h0">{{ 'general.404.title' | t }}</h1>
+    <p class="measure center-block" style="margin:1.6rem auto 3rem;">{{ 'general.404.subtext' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.404.link' | t }}</a>
+  </div>
+</div>
+
+{% schema %}
+{ "name": "404" }
+{% endschema %}

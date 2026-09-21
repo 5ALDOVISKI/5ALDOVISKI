@@ -1,0 +1,57 @@
+{%- comment -%} Contact form using Shopify's native contact form. {%- endcomment -%}
+<section class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width page-width--narrow">
+    <header class="text-center reveal" style="margin-bottom:3rem;">
+      {%- if section.settings.overline != blank -%}<p class="overline">{{ section.settings.overline | escape }}</p>{%- endif -%}
+      <h1 class="h1">{{ section.settings.heading | default: 'Contact' | escape }}</h1>
+      {%- if section.settings.subtext != blank -%}<p class="measure center-block" style="margin-top:1.2rem;">{{ section.settings.subtext | escape }}</p>{%- endif -%}
+    </header>
+
+    {%- form 'contact', class: 'contact-form reveal' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form__message form__message--success" role="status">{% render 'icon', icon: 'check', size: 16 %} {{ 'templates.contact.form.post_success' | t }}</p>
+      {%- elsif form.errors -%}
+        <p class="form__message form__message--error" role="alert">{{ 'templates.contact.form.error_heading' | t }} {{ form.errors | default_errors }}</p>
+      {%- endif -%}
+
+      <div style="display:grid;gap:1.6rem;grid-template-columns:1fr 1fr;">
+        <div class="field" style="flex-direction:column;align-items:flex-start;">
+          <label class="field__label" for="contact-name">{{ 'templates.contact.form.name' | t }}</label>
+          <input type="text" id="contact-name" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" autocomplete="name">
+        </div>
+        <div class="field" style="flex-direction:column;align-items:flex-start;">
+          <label class="field__label" for="contact-email">{{ 'templates.contact.form.email' | t }} *</label>
+          <input type="email" id="contact-email" name="contact[email]" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" autocomplete="email">
+        </div>
+      </div>
+      <div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.6rem;">
+        <label class="field__label" for="contact-phone">{{ 'templates.contact.form.phone' | t }}</label>
+        <input type="tel" id="contact-phone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+      </div>
+      <div class="field" style="flex-direction:column;align-items:flex-start;margin-top:1.6rem;">
+        <label class="field__label" for="contact-body">{{ 'templates.contact.form.comment' | t }} *</label>
+        <textarea id="contact-body" name="contact[body]" required>{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="button" style="margin-top:2rem;">{{ 'templates.contact.form.send' | t }}</button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ],
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "overline", "label": "Overline", "default": "Get in touch" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Contact" },
+    { "type": "text", "id": "subtext", "label": "Subtext", "default": "Questions on sizing, orders or returns — we usually reply within one business day." }
+  ],
+  "presets": [ { "name": "Contact form" } ]
+}
+{% endschema %}

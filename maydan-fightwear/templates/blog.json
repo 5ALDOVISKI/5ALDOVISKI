@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "posts_per_page": 9
+      }
+    }
+  },
+  "order": ["main"]
+}

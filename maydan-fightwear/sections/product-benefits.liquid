@@ -1,0 +1,106 @@
+{%- comment -%}
+  Product benefits — icon + label columns. Icons and wording editable.
+{%- endcomment -%}
+<section class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-heading reveal" style="justify-content:center;text-align:center;">
+        <h2 class="section-heading__title h3 center-block">{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+    <div class="benefits reveal">
+      {%- for block in section.blocks -%}
+        <div class="benefit" {{ block.shopify_attributes }}>
+          <div class="benefit__icon">
+            {%- if block.settings.custom_icon != blank -%}
+              <img src="{{ block.settings.custom_icon | image_url: width: 80 }}" alt="" loading="lazy" width="40" height="40">
+            {%- else -%}
+              {% render 'icon', icon: block.settings.icon, size: 40 %}
+            {%- endif -%}
+          </div>
+          <h3 class="benefit__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}
+            <p class="benefit__text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product benefits",
+  "class": "section-benefits",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" },
+        { "value": "scheme-3", "label": "Charcoal" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "stretch", "label": "Four-way stretch" },
+            { "value": "seam", "label": "Flatlock seam" },
+            { "value": "hem", "label": "Secure hem" },
+            { "value": "movement", "label": "Movement" },
+            { "value": "truck", "label": "Shipping" },
+            { "value": "check", "label": "Check" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "stretch"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon (optional)",
+          "info": "Overrides the icon above. Use a simple monochrome PNG/SVG."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Four-way stretch"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "stretch", "title": "Four-way stretch" } },
+        { "type": "benefit", "settings": { "icon": "seam", "title": "Flatlock seams" } },
+        { "type": "benefit", "settings": { "icon": "hem", "title": "Secure silicone hem" } },
+        { "type": "benefit", "settings": { "icon": "movement", "title": "Built for no-gi movement" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

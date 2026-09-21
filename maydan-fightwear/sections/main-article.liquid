@@ -1,0 +1,49 @@
+{%- comment -%} Article page + Article structured data. {%- endcomment -%}
+<article class="color-{{ section.settings.color_scheme }}">
+  {%- if section.settings.show_image and article.image -%}
+    <div class="collection-banner collection-banner--tall color-scheme-1">
+      <div class="collection-banner__media">{{ article.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '800,1200,2400', sizes: '100vw', alt: article.title | escape }}</div>
+      <div class="collection-banner__overlay"></div>
+      <div class="collection-banner__content">
+        <p class="overline">{{ article.published_at | date: '%b %d, %Y' }}</p>
+        <h1 class="collection-banner__title">{{ article.title | escape }}</h1>
+      </div>
+    </div>
+  {%- else -%}
+    <div class="page-width page-width--narrow text-center" style="padding-top:5rem;">
+      <p class="overline">{{ article.published_at | date: '%b %d, %Y' }}</p>
+      <h1 class="h1">{{ article.title | escape }}</h1>
+    </div>
+  {%- endif -%}
+
+  <div class="page-width page-width--narrow rte reveal" style="padding-top:4rem;padding-bottom:5rem;">
+    {{ article.content }}
+    {%- if section.settings.show_author and article.author != blank -%}
+      <p style="margin-top:3rem;opacity:.7;">— {{ article.author }}</p>
+    {%- endif -%}
+  </div>
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ article.title | json }},
+  "articleBody": {{ article.content | strip_html | json }},
+  {%- if article.image -%}"image": {{ article.image | image_url: width: 1200 | prepend: "https:" | json }},{%- endif -%}
+  "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+  "author": { "@type": "Person", "name": {{ article.author | json }} },
+  "publisher": { "@type": "Organization", "name": {{ shop.name | json }} }
+}
+</script>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" },
+    { "type": "checkbox", "id": "show_image", "label": "Show featured image", "default": true },
+    { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,51 @@
+{%- comment -%}
+  Product badges: New / Sale / Sold out / Low stock.
+  Accepts: product. Uses theme settings for toggles + thresholds.
+  Never invents urgency — Low stock reflects real inventory only.
+{%- endcomment -%}
+{%- liquid
+  assign show_new = false
+  assign new_tag = settings.card_new_badge_tag | downcase
+  if new_tag != blank
+    for tag in product.tags
+      assign tag_normalized = tag | downcase
+      if tag_normalized == new_tag
+        assign show_new = true
+        break
+      endif
+    endfor
+  endif
+
+  assign is_sold_out = false
+  unless product.available
+    assign is_sold_out = true
+  endunless
+
+  assign is_on_sale = false
+  if product.compare_at_price > product.price
+    assign is_on_sale = true
+  endif
+
+  assign is_low = false
+  if product.available and settings.card_show_low_stock_badge
+    assign variant = product.selected_or_first_available_variant
+    if variant.inventory_management != blank and variant.inventory_policy == 'deny' and variant.inventory_quantity > 0 and variant.inventory_quantity <= settings.card_low_stock_threshold
+      assign is_low = true
+    endif
+  endif
+-%}
+<div class="card__badges">
+  {%- if is_sold_out and settings.card_show_sold_out_badge -%}
+    <span class="badge badge--sold-out">{{ 'products.product.inventory_out_of_stock' | t }}</span>
+  {%- else -%}
+    {%- if show_new -%}
+      <span class="badge badge--new">New</span>
+    {%- endif -%}
+    {%- if is_on_sale and settings.card_show_sale_badge -%}
+      <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+    {%- endif -%}
+    {%- if is_low -%}
+      <span class="badge badge--low">{{ 'products.product.inventory_low_stock' | t }}</span>
+    {%- endif -%}
+  {%- endif -%}
+</div>

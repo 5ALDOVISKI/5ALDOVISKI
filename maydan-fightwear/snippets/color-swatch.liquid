@@ -1,0 +1,45 @@
+{%- comment -%}
+  Renders a single color swatch background style.
+  Accepts:
+    value  - the option value string (e.g. "Bone")
+    swatch - (optional) Shopify swatch object (value.swatch) with .color / .image
+  Returns an inline style string via the `style` capture is not possible in a
+  render, so this outputs the style attribute value directly. Use as:
+    style="{% render 'color-swatch', value: v, swatch: v.swatch %}"
+{%- endcomment -%}
+{%- liquid
+  assign handle = value | downcase | strip
+
+  if swatch.image
+    echo 'background-image:url(' | append: swatch.image | image_url: width: 60 | append: ');'
+  elsif swatch.color
+    echo 'background-color:' | append: swatch.color | append: ';'
+  else
+    case handle
+      when 'black', 'onyx', 'jet'
+        echo 'background-color:#090909;'
+      when 'bone', 'off-white', 'offwhite', 'cream', 'ivory', 'sand', 'natural'
+        echo 'background-color:#EEE9DF;border-color:rgba(9,9,9,0.25);'
+      when 'white'
+        echo 'background-color:#FFFFFF;border-color:rgba(9,9,9,0.25);'
+      when 'charcoal', 'graphite', 'gunmetal'
+        echo 'background-color:#181818;'
+      when 'grey', 'gray', 'stone', 'concrete'
+        echo 'background-color:#A7A39B;'
+      when 'red', 'crimson', 'blood', 'maroon'
+        echo 'background-color:#A31E27;'
+      when 'navy', 'midnight', 'ink'
+        echo 'background-color:#1c2333;'
+      when 'olive', 'military', 'army'
+        echo 'background-color:#4a4a35;'
+      when 'khaki', 'tan', 'desert'
+        echo 'background-color:#b7a888;'
+      when 'blue'
+        echo 'background-color:#2f4a6b;'
+      when 'green'
+        echo 'background-color:#3a5a44;'
+      else
+        echo 'background-color:' | append: handle | append: ';'
+    endcase
+  endif
+-%}

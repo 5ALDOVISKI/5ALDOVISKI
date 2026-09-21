@@ -1,0 +1,6 @@
+{%- comment -%} Cart item count bubble. Re-rendered via the Section Rendering API. {%- endcomment -%}
+{%- if cart == empty or cart.item_count == 0 -%}
+  <span class="cart-count-bubble" data-cart-count hidden>0</span>
+{%- else -%}
+  <span class="cart-count-bubble" data-cart-count>{{ cart.item_count }}</span>
+{%- endif -%}

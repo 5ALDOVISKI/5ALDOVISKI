@@ -1,0 +1,47 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "message-1": {
+          "type": "announcement",
+          "settings": {
+            "text": "COMPLIMENTARY US SHIPPING ON ORDERS $100+"
+          }
+        },
+        "message-2": {
+          "type": "announcement",
+          "settings": {
+            "text": "DROP 001 — AVAILABLE NOW"
+          }
+        },
+        "message-3": {
+          "type": "announcement",
+          "settings": {
+            "text": "JOIN THE MAYDAN"
+          }
+        }
+      },
+      "block_order": ["message-1", "message-2", "message-3"],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "autoplay": true,
+        "speed": 5
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "highlight_menu_title": "New Drop",
+        "transparent_on_home": true,
+        "enable_sticky": true,
+        "show_search": true,
+        "show_account": true
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

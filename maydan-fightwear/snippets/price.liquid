@@ -1,0 +1,36 @@
+{%- comment -%}
+  Renders a price block.
+  Accepts: product (or variant), use_variant (bool), show_compare (bool, default true)
+{%- endcomment -%}
+{%- liquid
+  if use_variant and product.selected_or_first_available_variant
+    assign target = product.selected_or_first_available_variant
+    assign price = target.price
+    assign compare_at = target.compare_at_price
+  elsif variant
+    assign target = variant
+    assign price = variant.price
+    assign compare_at = variant.compare_at_price
+  else
+    assign price = product.price
+    assign compare_at = product.compare_at_price
+    assign price_min = product.price_min
+    assign price_max = product.price_max
+    assign price_varies = product.price_varies
+  endif
+
+  assign on_sale = false
+  if compare_at and compare_at > price
+    assign on_sale = true
+  endif
+-%}
+<div class="price {% if on_sale %}price--on-sale{% endif %}" data-product-price>
+  {%- if price_varies and price_min != price_max -%}
+    <span class="price__regular">{{ 'products.product.price.from_price_html' | t: price: price_min | money }}</span>
+  {%- elsif on_sale -%}
+    <span class="price__sale">{{ price | money }}</span>
+    <s class="price__compare">{{ compare_at | money }}</s>
+  {%- else -%}
+    <span class="price__regular">{{ price | money }}</span>
+  {%- endif -%}
+</div>

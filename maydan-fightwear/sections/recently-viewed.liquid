@@ -1,0 +1,55 @@
+{%- comment -%}
+  Recently viewed products. product.js records handles in localStorage and
+  fetches this section via the Search API to render real product cards.
+{%- endcomment -%}
+<div data-recently-viewed-section>
+  <section class="section color-{{ section.settings.color_scheme }}">
+    <div class="page-width">
+      <div class="section-heading reveal">
+        <h2 class="section-heading__title h3">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <div data-recently-viewed data-limit="{{ section.settings.products_to_show }}" data-section-id="{{ section.id }}">
+        {%- if search.performed -%}
+          <div class="product-grid product-grid--{{ section.settings.columns }}" data-recently-viewed-grid>
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- render 'card-product', card_product: item -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-2"
+    },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Recently viewed" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 8, "step": 1, "label": "Products to show", "default": 4 },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    }
+  ],
+  "presets": [{ "name": "Recently viewed" }]
+}
+{% endschema %}

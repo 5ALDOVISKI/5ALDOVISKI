@@ -1,0 +1,32 @@
+{%- comment -%} Default page template: renders page title + rich text content. {%- endcomment -%}
+<div class="page-width page-width--narrow color-{{ section.settings.color_scheme }}" style="padding-top:5rem;padding-bottom:6rem;">
+  {%- if section.settings.show_title -%}
+    <header class="text-center reveal" style="margin-bottom:3.5rem;">
+      {%- if section.settings.overline != blank -%}<p class="overline">{{ section.settings.overline | escape }}</p>{%- endif -%}
+      <h1 class="h1">{{ page.title | escape }}</h1>
+    </header>
+  {%- endif -%}
+  <div class="rte reveal">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" }
+      ],
+      "default": "scheme-1"
+    },
+    { "type": "checkbox", "id": "show_title", "label": "Show page title", "default": true },
+    { "type": "text", "id": "overline", "label": "Overline" }
+  ]
+}
+{% endschema %}

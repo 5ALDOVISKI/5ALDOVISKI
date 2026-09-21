@@ -1,0 +1,10 @@
+{%- comment -%}
+  Body-level analytics fallbacks (noscript pixels). Rendered right after <body>.
+  The Meta noscript pixel loads from facebook.com by design.
+{%- endcomment -%}
+{%- if settings.meta_pixel_id != blank -%}
+  <noscript>
+    <img height="1" width="1" style="display:none" alt=""
+      src="https://www.facebook.com/tr?id={{ settings.meta_pixel_id | escape }}&ev=PageView&noscript=1">
+  </noscript>
+{%- endif -%}

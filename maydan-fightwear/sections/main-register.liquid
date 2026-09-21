@@ -1,0 +1,45 @@
+{%- comment -%} Create account. {%- endcomment -%}
+<div class="page-width color-{{ section.settings.color_scheme }}" style="max-width:52rem;padding-top:5rem;padding-bottom:6rem;">
+  <header class="text-center" style="margin-bottom:2rem;">
+    <h1 class="h1">{{ 'customer.register.title' | t }}</h1>
+    <p class="measure center-block" style="margin-top:1rem;">{{ 'customer.register.subtext' | t }}</p>
+  </header>
+  {%- form 'create_customer', novalidate: 'novalidate' -%}
+    {%- if form.errors -%}
+      <p class="form__message form__message--error" role="alert">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-bottom:1.6rem;">
+      <div class="field" style="flex-direction:column;align-items:flex-start;">
+        <label class="field__label" for="reg-first">{{ 'customer.register.first_name' | t }}</label>
+        <input type="text" id="reg-first" name="customer[first_name]" autocomplete="given-name">
+      </div>
+      <div class="field" style="flex-direction:column;align-items:flex-start;">
+        <label class="field__label" for="reg-last">{{ 'customer.register.last_name' | t }}</label>
+        <input type="text" id="reg-last" name="customer[last_name]" autocomplete="family-name">
+      </div>
+    </div>
+    <div class="field" style="flex-direction:column;align-items:flex-start;margin-bottom:1.6rem;">
+      <label class="field__label" for="reg-email">{{ 'customer.register.email' | t }}</label>
+      <input type="email" id="reg-email" name="customer[email]" autocomplete="email" required>
+    </div>
+    <div class="field" style="flex-direction:column;align-items:flex-start;margin-bottom:1rem;">
+      <label class="field__label" for="reg-password">{{ 'customer.register.password' | t }}</label>
+      <input type="password" id="reg-password" name="customer[password]" autocomplete="new-password" required>
+    </div>
+    <label style="display:flex;gap:1rem;align-items:center;font-size:1.3rem;margin:1.4rem 0;">
+      <input type="checkbox" name="customer[accepts_marketing]" value="true" style="width:1.8rem;height:1.8rem;accent-color:#A31E27;">
+      Keep me updated on drops and restocks.
+    </label>
+    <button type="submit" class="button button--full">{{ 'customer.register.submit' | t }}</button>
+    <a href="{{ routes.account_login_url }}" class="button button--secondary button--full" style="margin-top:1rem;">{{ 'customer.login_page.sign_in' | t }}</a>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "options": [ { "value": "scheme-1", "label": "Black" }, { "value": "scheme-2", "label": "Bone" } ], "default": "scheme-1" }
+  ]
+}
+{% endschema %}

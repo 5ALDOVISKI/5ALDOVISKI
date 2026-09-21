@@ -1,0 +1,81 @@
+{%- comment -%}
+  Breadcrumbs + BreadcrumbList structured data.
+  Renders on product, collection, page, article, and blog.
+{%- endcomment -%}
+{%- liquid
+  assign show = false
+  if request.page_type == 'product' or request.page_type == 'collection' or request.page_type == 'page' or request.page_type == 'article' or request.page_type == 'blog'
+    assign show = true
+  endif
+-%}
+{%- if show -%}
+  <nav class="breadcrumb page-width" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a>
+    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+    {%- if request.page_type == 'product' -%}
+      {%- if collection.url -%}
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      {%- endif -%}
+      <span aria-current="page">{{ product.title }}</span>
+    {%- elsif request.page_type == 'collection' -%}
+      <span aria-current="page">{{ collection.title }}</span>
+    {%- elsif request.page_type == 'blog' -%}
+      <span aria-current="page">{{ blog.title }}</span>
+    {%- elsif request.page_type == 'article' -%}
+      <a href="{{ blog.url }}">{{ blog.title }}</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ article.title }}</span>
+    {%- elsif request.page_type == 'page' -%}
+      <span aria-current="page">{{ page.title }}</span>
+    {%- endif -%}
+  </nav>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | append: routes.root_url | json }}
+      }
+      {%- if request.page_type == 'product' -%}
+        {%- if collection.url -%}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ collection.title | json }},
+          "item": {{ shop.url | append: collection.url | json }}
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ product.title | json }}
+        }
+        {%- else -%}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ product.title | json }}
+        }
+        {%- endif -%}
+      {%- elsif request.page_type == 'collection' -%}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ collection.title | json }}
+        }
+      {%- elsif request.page_type == 'page' -%}
+        ,{
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ page.title | json }}
+        }
+      {%- endif -%}
+    ]
+  }
+  </script>
+{%- endif -%}

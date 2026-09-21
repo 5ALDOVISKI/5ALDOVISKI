@@ -1,0 +1,46 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {
+            "text": "<p>MAYDAN — the ground where people meet, test themselves and earn their place. Technical fightwear for modern combat sports.</p>"
+          }
+        },
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Join the MAYDAN",
+            "text": "Early access, private releases and restock alerts."
+          }
+        }
+      },
+      "block_order": ["brand", "shop", "help", "newsletter"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_country_selector": true,
+        "show_locale_selector": true,
+        "show_payment_icons": true,
+        "show_policy_links": true
+      }
+    }
+  },
+  "order": ["footer"]
+}

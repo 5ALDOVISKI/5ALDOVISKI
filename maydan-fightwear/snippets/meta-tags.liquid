@@ -1,0 +1,94 @@
+{%- comment -%}
+  SEO + social meta tags. Renders in <head>.
+  - Meta description (page > product > collection > shop)
+  - Open Graph + Twitter cards
+  - Organization + WebSite structured data (JSON-LD)
+  Product/collection/breadcrumb structured data are rendered by their sections.
+{%- endcomment -%}
+
+{%- liquid
+  assign og_title = page_title
+  assign og_url = canonical_url
+  assign og_type = 'website'
+  assign og_description = page_description | default: shop.description | default: shop.name
+
+  if request.page_type == 'product'
+    assign og_type = 'product'
+  elsif request.page_type == 'article'
+    assign og_type = 'article'
+  endif
+-%}
+
+{%- if page_description -%}
+  <meta name="description" content="{{ page_description | escape }}">
+{%- else -%}
+  <meta name="description" content="{{ og_description | strip_html | truncatewords: 30 | escape }}">
+{%- endif -%}
+
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ og_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:description" content="{{ og_description | strip_html | escape }}">
+
+{%- if request.page_type == 'product' and product.featured_media -%}
+  {%- assign og_image = product.featured_media | image_url: width: 1200 -%}
+  <meta property="og:image" content="http:{{ og_image }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image }}">
+  <meta property="og:image:width" content="1200">
+{%- elsif request.page_type == 'article' and article.image -%}
+  {%- assign og_image = article.image | image_url: width: 1200 -%}
+  <meta property="og:image" content="http:{{ og_image }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image }}">
+{%- elsif settings.share_image -%}
+  {%- assign og_image = settings.share_image | image_url: width: 1200 -%}
+  <meta property="og:image" content="http:{{ og_image }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image }}">
+{%- endif -%}
+
+{%- if request.page_type == 'product' -%}
+  <meta property="product:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+{%- endif -%}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | strip_html | escape }}">
+
+{%- comment -%} Organization + WebSite structured data {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | append: '/' | json }},
+  {%- if settings.logo -%}
+  "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+  {%- endif -%}
+  "sameAs": [
+    {%- assign socials = '' -%}
+    {%- if settings.social_instagram_link != blank %}{{ settings.social_instagram_link | json }}{% assign socials = 'y' %}{% endif -%}
+    {%- if settings.social_tiktok_link != blank %}{% if socials != '' %},{% endif %}{{ settings.social_tiktok_link | json }}{% assign socials = 'y' %}{% endif -%}
+    {%- if settings.social_youtube_link != blank %}{% if socials != '' %},{% endif %}{{ settings.social_youtube_link | json }}{% assign socials = 'y' %}{% endif -%}
+    {%- if settings.social_facebook_link != blank %}{% if socials != '' %},{% endif %}{{ settings.social_facebook_link | json }}{% assign socials = 'y' %}{% endif -%}
+    {%- if settings.social_x_link != blank %}{% if socials != '' %},{% endif %}{{ settings.social_x_link | json }}{% endif -%}
+  ]
+}
+</script>
+
+{%- if request.page_type == 'index' -%}
+{%- capture search_target -%}{{ shop.url }}/search?q={search_term_string}{%- endcapture -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | append: '/' | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {{ search_target | json }},
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{%- endif -%}

@@ -1,0 +1,112 @@
+{%- comment -%}
+  Featured products — pulled from a merchant-selected collection.
+  Product cards only render real product imagery; a branded placeholder is used
+  where a product has no image. Nothing is fabricated.
+{%- endcomment -%}
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign product_limit = section.settings.products_to_show
+  assign columns = section.settings.columns
+-%}
+<section class="section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="section-heading reveal">
+      <h2 class="section-heading__title h2">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.show_view_all and collection != blank -%}
+        <a href="{{ collection.url }}" class="section-heading__link">{{ section.settings.view_all_label | default: 'View all' | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="product-grid product-grid--{{ columns }}">
+        {%- for product in collection.products limit: product_limit -%}
+          {%- render 'card-product', card_product: product, lazy: true -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      {%- comment -%} Onboarding / empty state — no fake products {%- endcomment -%}
+      <div class="product-grid product-grid--{{ columns }}">
+        {%- for i in (1..product_limit) -%}
+          <div class="card reveal">
+            <div class="card__media" style="--card-image-ratio: 0.75;">
+              <div class="card__placeholder"><span class="card__placeholder-mark">MAYDAN</span></div>
+            </div>
+            <div class="card__content">
+              <span class="card__type">Select a collection in the theme editor</span>
+              <h3 class="card__title">Product</h3>
+              <div class="card__meta"><span class="price"><span class="price__regular">$0.00</span></span></div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured products",
+  "class": "section-featured-products",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Black" },
+        { "value": "scheme-2", "label": "Bone" },
+        { "value": "scheme-3", "label": "Charcoal" }
+      ],
+      "default": "scheme-2"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Latest gear"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "label": "Products to show",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" },
+        { "value": "5", "label": "5" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show \"View all\" link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "View all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured products"
+    }
+  ]
+}
+{% endschema %}
